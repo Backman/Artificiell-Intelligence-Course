@@ -23,6 +23,12 @@ public:
 	{ 
 		return _char;
 	}
+
+	char getChar() const
+	{
+		return _char;
+	}
+
 	void setChar(char c) 
 	{ 
 		_char = c; 

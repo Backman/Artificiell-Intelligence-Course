@@ -17,9 +17,7 @@ void geneSwap(Gene& gene1, Gene& gene2);
 float randomRange(float min, float max);
 int randomRange(int min, int max);
 
-const std::string targetString = "Ey man, League of Legends";
-
-float bestFitness = 0;
+const std::string targetString = "Niklas sucks!";
 
 int main()
 {
@@ -41,36 +39,36 @@ int main()
 
 
 	std::string solution = "";
+	Individual bestInd;
 
-	int nth = 128;
+	int generationCount = 0;
+
+	int nth = 64;
 	for (int i = 0; i < GENERATION_COUNT; ++i) {
+		generationCount++;
+
 		evolve(population);
 		population.sortPopulation();
-		if (bestFitness < population[0].getFitness()) {
-			bestFitness = population[0].getFitness();
-			solution = "";
-
-			Chromosome chrom = population[0].getChromosome();
-
-			for (auto& gene : chrom.getGeneList()) {
-				solution += gene.getChar();
-			}
-			
+		if (bestInd < population[0]) {
+			bestInd = population[0];
 		}
 
 		if (i % nth == 0) {
-			std::cout << "Current best fitness: " << bestFitness << " | " << solution << std::endl;
+			std::cout << "Generation: " << generationCount << std::endl;
+			std::cout << "Best individual: " << bestInd << std::endl;
 		}
 
-		if (bestFitness == 1){
+		if (bestInd.getFitness() >= 1){
 			break;
 		}
 	}
 
-	
+	std::cout << std::endl;
 
-	std::cout << "Found solution: " + solution << std::endl;
+	std::cout << "Solved on generation " << generationCount << '!' << std::endl;
 
+	std::cout << bestInd << std::endl << std::endl;
+	std::cout << "Press enter to exit";
 	
 
 	std::cin.get();

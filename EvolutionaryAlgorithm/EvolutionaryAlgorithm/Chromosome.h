@@ -42,6 +42,19 @@ public:
 		return _genes;
 	}
 
+	friend std::ostream& operator<<(std::ostream& os, const Chromosome& chromosome)
+	{
+		std::string s = "";
+
+		for (auto& gene : chromosome._genes) {
+			s += gene.getChar();
+		}
+
+		os << '"' << s << '"';
+
+		return os;
+	}
+
 private:
 	GeneList _genes;
 };

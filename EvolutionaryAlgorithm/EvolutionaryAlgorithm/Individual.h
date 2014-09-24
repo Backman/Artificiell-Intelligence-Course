@@ -42,6 +42,26 @@ public:
 		return _fitness > rhs._fitness;
 	}
 
+	bool operator<(const Individual& rhs) const
+	{
+		return _fitness < rhs._fitness;
+	}
+
+	Individual& operator=(const Individual& rhs) 
+	{
+		_fitness = rhs._fitness;
+		_chromosome = rhs._chromosome;
+
+		return *this;
+	}
+
+	friend std::ostream& operator<<(std::ostream& os, const Individual& ind)
+	{
+		os << "Fitness: " << ind._fitness << " | Chromosome: " << ind._chromosome;
+
+		return os;
+	}
+
 private:
 	float _fitness;
 	Chromosome _chromosome;
