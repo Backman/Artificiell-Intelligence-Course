@@ -11,9 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{749FF18D-9736-4910-A46A-2BDAEDB37FE2}</ProjectGuid>
+    <ProjectGuid>{E3EC218B-F290-4690-BDF5-E675B83BFD65}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>ArtificialNeuralNetwork</RootNamespace>
+    <RootNamespace>NeuralNetwork</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -79,6 +79,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Network.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Network.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

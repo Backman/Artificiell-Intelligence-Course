@@ -1,0 +1,24 @@
+﻿Added SFML to the project
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+# On branch master
+# Your branch is up-to-date with 'origin/master'.
+#
+# Changes to be committed:
+#	deleted:    ArtificialNeuralNetwork/ArtificialNeuralNetwork/Main.cpp
+#	renamed:    ArtificialNeuralNetwork/ArtificialNeuralNetwork.sln -> NeuralNetwork/NeuralNetwork.sln
+#	new file:   NeuralNetwork/NeuralNetwork/Main.cpp
+#	new file:   NeuralNetwork/NeuralNetwork/Network.cpp
+#	new file:   NeuralNetwork/NeuralNetwork/Network.h
+#	renamed:    ArtificialNeuralNetwork/ArtificialNeuralNetwork/ArtificialNeuralNetwork.vcxproj -> NeuralNetwork/NeuralNetwork/NeuralNetwork.vcxproj
+#	renamed:    ArtificialNeuralNetwork/ArtificialNeuralNetwork/ArtificialNeuralNetwork.vcxproj.filters -> NeuralNetwork/NeuralNetwork/NeuralNetwork.vcxproj.filters
+#	new file:   SelfOrganizingMap/SelfOrganizingMap/Canvas.cpp
+#	new file:   SelfOrganizingMap/SelfOrganizingMap/Canvas.h
+#	modified:   SelfOrganizingMap/SelfOrganizingMap/Main.cpp
+#	modified:   SelfOrganizingMap/SelfOrganizingMap/Node.cpp
+#	modified:   SelfOrganizingMap/SelfOrganizingMap/Node.h
+#	modified:   SelfOrganizingMap/SelfOrganizingMap/SelfOrganizingMap.vcxproj
+#	modified:   SelfOrganizingMap/SelfOrganizingMap/SelfOrganizingMap.vcxproj.filters
+#	modified:   SelfOrganizingMap/SelfOrganizingMap/Utility.h
+#
+

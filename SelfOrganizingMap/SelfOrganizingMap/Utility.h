@@ -2,7 +2,7 @@
 
 #include <cstdlib>
 
-static float swapFloats(float& a, float& b)
+static void swapFloats(float& a, float& b)
 {
 	float temp = a;
 	a = b;

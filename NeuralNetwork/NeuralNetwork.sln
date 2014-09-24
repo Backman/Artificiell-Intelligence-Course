@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ArtificialNeuralNetwork", "ArtificialNeuralNetwork\ArtificialNeuralNetwork.vcxproj", "{749FF18D-9736-4910-A46A-2BDAEDB37FE2}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NeuralNetwork", "NeuralNetwork\NeuralNetwork.vcxproj", "{E3EC218B-F290-4690-BDF5-E675B83BFD65}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{749FF18D-9736-4910-A46A-2BDAEDB37FE2}.Debug|Win32.ActiveCfg = Debug|Win32
-		{749FF18D-9736-4910-A46A-2BDAEDB37FE2}.Debug|Win32.Build.0 = Debug|Win32
-		{749FF18D-9736-4910-A46A-2BDAEDB37FE2}.Release|Win32.ActiveCfg = Release|Win32
-		{749FF18D-9736-4910-A46A-2BDAEDB37FE2}.Release|Win32.Build.0 = Release|Win32
+		{E3EC218B-F290-4690-BDF5-E675B83BFD65}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E3EC218B-F290-4690-BDF5-E675B83BFD65}.Debug|Win32.Build.0 = Debug|Win32
+		{E3EC218B-F290-4690-BDF5-E675B83BFD65}.Release|Win32.ActiveCfg = Release|Win32
+		{E3EC218B-F290-4690-BDF5-E675B83BFD65}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
