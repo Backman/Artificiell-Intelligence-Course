@@ -4,7 +4,7 @@
 #include <time.h>
 #include <string>
 #include "Population.h"
-#include "Defines.h"
+#include "Constants.h"
 
 void evolve(Population& population);
 float evaluate(Chromosome& chromosome);

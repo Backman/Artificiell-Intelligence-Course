@@ -82,7 +82,7 @@
     <ClCompile Include="Universe.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Defines.h" />
+    <ClInclude Include="Constants.h" />
     <ClInclude Include="Gene.h" />
     <ClInclude Include="Chromosome.h" />
     <ClInclude Include="Individual.h" />

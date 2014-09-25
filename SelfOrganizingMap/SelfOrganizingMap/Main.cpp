@@ -1,12 +1,10 @@
 
 #include <SFML\Graphics.hpp>
-#include "Canvas.h"
-
-const int CELL_SIZE = 10;
-
-const int WINDOW_WIDTH = 400;
-const int WINDOW_HEIGHT = 400;
-
+#include <iostream>
+#include <sstream>
+#include "SOM.h"
+#include "Manager.h"
+#include "Constants.h"
 
 int main()
 {
@@ -18,9 +16,17 @@ int main()
 	int cols = WINDOW_WIDTH / CELL_SIZE;
 	int rows = WINDOW_HEIGHT / CELL_SIZE;
 
+	Manager manager(cols, rows, CELL_SIZE, NUM_EPOCHS);
+	
+	sf::Font font;
+	font.loadFromFile("calibri.ttf");
 
-	Canvas c = Canvas(cols, rows, CELL_SIZE);
 
+	sf::Text text("", font);
+	text.setPosition(sf::Vector2f(0.0f, 0.0f));
+
+	bool train = false;
+	int count = 0;
 	while (window.isOpen())
 	{
 		sf::Event event;
@@ -28,6 +34,15 @@ int main()
 		{
 			if (event.type == sf::Event::KeyPressed) {
 				sf::Event::KeyEvent key = event.key;
+				switch (key.code) {
+				case sf::Keyboard::Escape:
+					window.close();
+					break;
+
+				case sf::Keyboard::Space:
+					train = true;
+					break;
+				}
 				if (key.code == sf::Keyboard::Escape) {
 					window.close();
 				}
@@ -38,9 +53,25 @@ int main()
 		}
 
 
+		if (!manager.isDone())
+		{
+				manager.train();
+			if (train) {
+				count++;
+				if (count >= 200) {
+					count = 0;
+					train = false;
+				}
+			}
+
+			std::stringstream ss;
+			ss << "Epoch: " << manager.getEpochCount();
+			text.setString(ss.str());
+		}
 
 		window.clear();
-		c.drawCanvas(&window);
+		manager.draw(&window);
+		window.draw(text);
 		window.display();
 	}
 

@@ -19,8 +19,14 @@ public:
 
 	void renderNode(sf::RenderWindow* window);
 
+	void adjustWeight(float learningRate, float h, const std::vector<float>& target);
 
-	static float getDistance(Weights& weights, const Weights& inputWeights);
+	float getX() const { return _x; }
+	float getY() const { return _y; }
+
+	float getDistance(const Weights& inputWeights);
+
+	static float euclidianDistanceSqr(Node& a, Node& b);
 private:
 	void initWeights(int count);
 	
