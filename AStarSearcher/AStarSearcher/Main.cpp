@@ -25,13 +25,16 @@ int main()
 	aStar.getSolution(solution);
 
 	for (int i = solution.size() - 1; i >= 0; --i) {
+		std::cin.get();
+		std::cout << "Step: " << solution.size() - i << std::endl;
 		solution[i].printState();
-
 	}
 
-	std::cout << "Steps: " << aStar.getTotalSteps() << std::endl;
+	//std::cout << "Steps: " << aStar.getTotalSteps() << std::endl;
+	aStar.clearNodes();
 	std::cout << "Allocated count: " << aStar.getAllocatedCount() << std::endl;
 	std::cout << "Number of steps: " << solution.size() << std::endl;
+	std::cout << "Press enter to exit..." << std::endl;
 
 	std::cin.get();
 	return EXIT_SUCCESS;

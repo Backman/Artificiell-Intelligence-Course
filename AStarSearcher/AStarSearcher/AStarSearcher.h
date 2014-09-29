@@ -71,8 +71,6 @@ public:
 			_goal->parent = _current->parent;
 			_goal->cost = _current->cost;
 
-			//clearList(_openList);
-			//clearList(_closedList);
 
 			_state = SearchState::SUCCEEDED;
 			return _state;
@@ -181,16 +179,16 @@ public:
 	{
 		clearList(_openList);
 		clearList(_closedList);
-		//clearList(_expandList);
+
 		_expandList.clear();
 	}
 
 	void clearNodes()
 	{
-		clearList();
+		clearLists();
 
-		deleteNode(_start);
 		deleteNode(_goal);
+		deleteNode(_current);
 	}
 
 	void deleteNode(Node* node)
