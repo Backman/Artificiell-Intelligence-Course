@@ -4,12 +4,12 @@
 
 SOM::SOM(int rows, int cols, int cellSize, int epochs) :
 	_rows(rows), _cols(cols),
-	_epochCount(epochs), _currentEpoch(0),
-	_isDone(false)
+	_currentEpoch(0), _isDone(false)
 {
 	initSOM(rows, cols, cellSize);
 
 	_timeConstant = epochs / std::log(START_RADIUS);
+	_timeConstant *= 3.0f;
 }
 
 
@@ -54,10 +54,9 @@ Node& SOM::getBMU(const std::vector<float>& input)
 	return *bmu;
 }
 
-void SOM::train(const std::vector<std::vector<float>>& targetSets)
+void SOM::train(int epochCount, const std::vector<std::vector<float>>& targetSets)
 {
-	if (_epochCount > 0) {
-
+	if (epochCount > 0) {
 		int size = targetSets.size();
 		int targetIndex = Utility::randomIntRange(0, size - 1);
 		std::vector<float> target = targetSets[targetIndex];
@@ -73,7 +72,7 @@ void SOM::train(const std::vector<std::vector<float>>& targetSets)
 
 			// If this node is inside the neighbourhood radius 
 			if (distSqr < radiusSqr) {
-				float learningRate = learningRateFunction(_currentEpoch, _epochCount);
+				float learningRate = learningRateFunction(_currentEpoch, epochCount);
 				float gaussian = exp(-distSqr / (2 * radiusSqr));
 
 				node.adjustWeight(learningRate, gaussian, target);
@@ -81,7 +80,6 @@ void SOM::train(const std::vector<std::vector<float>>& targetSets)
 		}
 
 		++_currentEpoch;
-		--_epochCount;
 	}
 	else {
 		_isDone = true;

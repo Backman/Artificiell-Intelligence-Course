@@ -1,6 +1,8 @@
 
 #include "PuzzleState.h"
 
+#define STEP_SEARCH 1
+
 int main()
 {
 	AStarSearcher<PuzzleState> aStar;
@@ -25,7 +27,9 @@ int main()
 	aStar.getSolution(solution);
 
 	for (int i = solution.size() - 1; i >= 0; --i) {
+#if STEP_SEARCH == 1
 		std::cin.get();
+#endif
 		std::cout << "Step: " << solution.size() - i << std::endl;
 		solution[i].printState();
 	}

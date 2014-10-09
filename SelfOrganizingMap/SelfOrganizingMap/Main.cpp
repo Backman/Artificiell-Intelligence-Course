@@ -40,7 +40,7 @@ int main()
 					break;
 
 				case sf::Keyboard::Space:
-					train = true;
+					//train = true;
 					break;
 				}
 				if (key.code == sf::Keyboard::Escape) {
@@ -55,14 +55,7 @@ int main()
 
 		if (!manager.isDone())
 		{
-				manager.train();
-			if (train) {
-				count++;
-				if (count >= 200) {
-					count = 0;
-					train = false;
-				}
-			}
+			manager.train();
 
 			std::stringstream ss;
 			ss << "Epoch: " << manager.getEpochCount();

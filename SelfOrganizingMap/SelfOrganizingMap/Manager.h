@@ -16,8 +16,10 @@ public:
 	int getEpochCount() const;
 
 private:
-	void initTargetSets();
+	void initRandomTargetSets();
+	void initDefinedTargetSets();
 
+	int _epoch;
 	std::shared_ptr<SOM> _som;
 
 	std::vector<std::vector<float>> _targetSet;

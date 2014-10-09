@@ -14,7 +14,7 @@ public:
 
 	std::vector<float> getRandomSample();
 	Node& getBMU(const std::vector<float>& target);
-	void train(const std::vector<std::vector<float>>& targetSet);
+	void train(int epochCount, const std::vector<std::vector<float>>& targetSet);
 
 	bool isDone() const;
 
@@ -28,7 +28,6 @@ private:
 
 	bool _isDone;
 	int _rows, _cols;
-	int _epochCount;
 	int _currentEpoch;
 	float _timeConstant;
 
