@@ -1,31 +1,45 @@
 #pragma once
 
-template<typename T>
+#include <iostream>
+#include <string>
+
 class Machine;
 
-template<typename T>
 class State
 {
 public:
-	State()
+	State(std::string name) :
+		_name(name), _isEntered(false)
 	{ }
 
 	virtual ~State()
 	{ }
 
-	virtual void initialize(T& owner, Machine<T>* machine)
+	virtual void initialize(Machine* machine)
 	{
-		_owner = owner;
 		_machine = machine;
 	}
 
 	virtual void tick() = 0;
-	virtual void reason() = 0;
 	virtual void enter() = 0;
 	virtual void exit() = 0;
 
+	bool operator==(const State& rhs) const
+	{
+		return _name == rhs._name;
+	}
+
+	bool operator!=(const State& rhs) const
+	{
+		return !(*this == rhs);
+	}
+
+	std::string getName() const { return _name; }
+
 protected:
-	T _owner;
-	Machine<T>* _machine;
+	Machine* _machine;
+	std::string _name;
+
+	bool _isEntered;
 };
 

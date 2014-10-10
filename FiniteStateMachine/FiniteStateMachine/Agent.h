@@ -1,6 +1,7 @@
 #pragma once
 #include "Machine.h"
-#include "Walking.h"
+#include <SFML\Window\Event.hpp>
+#include <SFML\Window\Window.hpp>
 
 class Agent
 {
@@ -9,9 +10,13 @@ public:
 	~Agent();
 
 	void tick();
+	void reason();
 
 private:
-	Machine<Agent> _machine;
-	Walking _walking;
+	void handleInput();
+
+	std::shared_ptr<Machine> _machine;
+
+	bool _up, _down, _left, _right;
 };
 

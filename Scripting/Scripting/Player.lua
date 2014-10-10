@@ -1,7 +1,9 @@
 movementSpeed = 1.0
 
+function tick(delta)
+	print("Tick")
+end
 
-
-function update(delta)
-	print(delta * movementSpeed)
+function render(window)
+	print("Render")
 end

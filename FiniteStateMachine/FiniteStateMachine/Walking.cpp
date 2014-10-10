@@ -1,7 +1,8 @@
 #include "Walking.h"
 
 
-Walking::Walking()
+Walking::Walking() :
+	State("Walking")
 {
 }
 
@@ -9,3 +10,5 @@ Walking::Walking()
 Walking::~Walking()
 {
 }
+
+

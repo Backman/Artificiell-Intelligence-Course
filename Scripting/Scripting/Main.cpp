@@ -5,32 +5,23 @@
 
 #include <SFML\Graphics.hpp>
 
+#include "Entity.h"
+
 int main()
 {
 	std::ifstream file("Config.lua");
 	std::string script((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
 
-	std::ifstream file2("Player.lua");
-	std::string script2((std::istreambuf_iterator<char>(file2)), std::istreambuf_iterator<char>());
-	
-
 	Lua lua;
-	Lua lua2;
+
+	lua.LoadStandardLibraries();
 
 	lua.RunScript(script);
 
-	lua2.LoadStandardLibraries();
-	lua2.RunScript(script2);
-
-	file2.close();
-
-	int width = lua.GetGlobalEnvironment().Get<int>("width");
-	int height = lua.GetGlobalEnvironment().Get<int>("height");
-	std::string title = lua.GetGlobalEnvironment().Get<std::string>("title");
-
-	LuaTable global = lua2.GetGlobalEnvironment();
-
-	auto updateFunc = global.Get<LuaFunction<void(float)>>("update");
+	LuaTable global = lua.GetGlobalEnvironment();
+	int width = global.Get<int>("width");
+	int height = global.Get<int>("height");
+	std::string title = global.Get<std::string>("title");
 
 
 	sf::RenderWindow window(sf::VideoMode(width, height), title);
@@ -40,6 +31,9 @@ int main()
 	window.setFramerateLimit(60);
 
 	sf::Clock deltaClock;
+
+	std::string entityFile = "Player.lua";
+	Entity e(entityFile);
 
 	while (window.isOpen())
 	{
@@ -55,11 +49,7 @@ int main()
 				break;
 
 			case sf::Keyboard::F:
-				file2.open("Player.lua");
-				script2 = std::string((std::istreambuf_iterator<char>(file2)), std::istreambuf_iterator<char>());
-				lua2.RunScript(script2);
-				updateFunc = global.Get<LuaFunction<void(float)>>("update");
-				file2.close();
+				e.recompile();
 				break;
 			}
 
@@ -69,9 +59,10 @@ int main()
 
 		float delta = deltaClock.restart().asSeconds();
 
-		updateFunc.Invoke(delta);
+		e.tick(delta);
 
 		window.clear();
+		e.render(&window);
 		window.draw(shape);
 		window.display();
 	}
