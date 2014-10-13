@@ -1,10 +1,10 @@
 #pragma once
 #include "Node.h"
-class Leaf :
+class Action :
 	public Node
 {
 public:
-	Leaf();
-	virtual ~Leaf();
+	Action();
+	virtual ~Action();
 };
 

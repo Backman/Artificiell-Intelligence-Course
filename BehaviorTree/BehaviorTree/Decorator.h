@@ -4,7 +4,10 @@ class Decorator :
 	public Node
 {
 public:
-	Decorator();
+	Decorator(Node* child);
 	virtual ~Decorator();
+
+protected:
+	Node* _child;
 };
 

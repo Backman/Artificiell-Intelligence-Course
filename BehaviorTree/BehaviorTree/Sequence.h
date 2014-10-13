@@ -6,5 +6,8 @@ class Sequence :
 public:
 	Sequence();
 	~Sequence();
+
+protected:
+	virtual Status execute() override;
 };
 

@@ -6,5 +6,8 @@ class Selector :
 public:
 	Selector();
 	~Selector();
+
+protected:
+	virtual Status execute() override;
 };
 
