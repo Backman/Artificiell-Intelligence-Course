@@ -78,26 +78,31 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Action.cpp" />
     <ClCompile Include="Assert.cpp" />
     <ClCompile Include="BehaviorTree.cpp" />
-    <ClCompile Include="Composite.cpp" />
-    <ClCompile Include="Decorator.cpp" />
-    <ClCompile Include="Inverter.cpp" />
+    <ClCompile Include="BTAction.cpp" />
+    <ClCompile Include="BTCompositeNode.cpp" />
+    <ClCompile Include="BTCondition.cpp" />
+    <ClCompile Include="BTDecoratorNode.cpp" />
+    <ClCompile Include="BTMaxTimes.cpp" />
+    <ClCompile Include="BTNode.cpp" />
+    <ClCompile Include="BTSelector.cpp" />
+    <ClCompile Include="BTSequence.cpp" />
+    <ClCompile Include="BTTaskNode.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Selector.cpp" />
-    <ClCompile Include="Sequence.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Action.h" />
     <ClInclude Include="Assert.h" />
     <ClInclude Include="BehaviorTree.h" />
-    <ClInclude Include="Composite.h" />
-    <ClInclude Include="Decorator.h" />
-    <ClInclude Include="Inverter.h" />
-    <ClInclude Include="Node.h" />
-    <ClInclude Include="Selector.h" />
-    <ClInclude Include="Sequence.h" />
+    <ClInclude Include="BTAction.h" />
+    <ClInclude Include="BTCompositeNode.h" />
+    <ClInclude Include="BTCondition.h" />
+    <ClInclude Include="BTDecoratorNode.h" />
+    <ClInclude Include="BTMaxTimes.h" />
+    <ClInclude Include="BTSelector.h" />
+    <ClInclude Include="BTSequence.h" />
+    <ClInclude Include="BTTaskNode.h" />
+    <ClInclude Include="BTNode.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

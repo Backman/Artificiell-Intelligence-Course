@@ -1,16 +1,19 @@
 #pragma once
 
-class Node;
+class BTNode;
+enum class Status;
 
 class BehaviorTree
 {
 public:
-	BehaviorTree(Node* root);
+	BehaviorTree();
 	~BehaviorTree();
 
-	void tick();
+	void init(BTNode* root);
+
+	Status tick();
 
 private:
-	Node* _root;
+	BTNode* _root;
 };
 

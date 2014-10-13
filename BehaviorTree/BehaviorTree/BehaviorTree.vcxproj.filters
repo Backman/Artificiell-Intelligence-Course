@@ -22,14 +22,14 @@
     <Filter Include="Header Files\Action">
       <UniqueIdentifier>{1c4b6cfc-25bb-4aaf-86b3-ec1207f7131b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Action">
+      <UniqueIdentifier>{f90bf094-5894-4444-b505-084c896d4864}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Source Files\Composite">
-      <UniqueIdentifier>{17dea731-25b3-421e-8002-38778b77d948}</UniqueIdentifier>
+      <UniqueIdentifier>{b5b4db7c-fd20-4ec9-abd1-7b519ca0ac26}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Decorator">
-      <UniqueIdentifier>{8738f61d-ad3b-4881-adb6-19d4b1ca81b2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Action">
-      <UniqueIdentifier>{aa58235b-c1db-44ef-9844-4d252aa64d93}</UniqueIdentifier>
+      <UniqueIdentifier>{7918ac1c-0b05-42c6-9cf7-bbcb75489693}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -42,23 +42,32 @@
     <ClCompile Include="BehaviorTree.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Action.cpp">
-      <Filter>Source Files\Action</Filter>
+    <ClCompile Include="BTCompositeNode.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Sequence.cpp">
-      <Filter>Source Files\Composite</Filter>
+    <ClCompile Include="BTSelector.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Selector.cpp">
-      <Filter>Source Files\Composite</Filter>
+    <ClCompile Include="BTSequence.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Composite.cpp">
-      <Filter>Source Files\Composite</Filter>
+    <ClCompile Include="BTDecoratorNode.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Decorator.cpp">
-      <Filter>Source Files\Decorator</Filter>
+    <ClCompile Include="BTTaskNode.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Inverter.cpp">
-      <Filter>Source Files\Decorator</Filter>
+    <ClCompile Include="BTAction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BTCondition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BTNode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BTMaxTimes.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -68,26 +77,32 @@
     <ClInclude Include="BehaviorTree.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Node.h">
+    <ClInclude Include="BTCompositeNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Action.h">
-      <Filter>Header Files\Action</Filter>
+    <ClInclude Include="BTSelector.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Composite.h">
-      <Filter>Header Files\Composite</Filter>
+    <ClInclude Include="BTSequence.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Selector.h">
-      <Filter>Header Files\Composite</Filter>
+    <ClInclude Include="BTDecoratorNode.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Sequence.h">
-      <Filter>Header Files\Composite</Filter>
+    <ClInclude Include="BTTaskNode.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Decorator.h">
-      <Filter>Header Files\Decorator</Filter>
+    <ClInclude Include="BTCondition.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Inverter.h">
-      <Filter>Header Files\Decorator</Filter>
+    <ClInclude Include="BTNode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BTAction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BTMaxTimes.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
