@@ -1,9 +1,9 @@
-#include "Agent.h"
+#include "Actor.h"
 #include "Running.h"
 #include "Walking.h"
 
 
-Agent::Agent() :
+Actor::Actor() :
 	_machine(std::make_shared<Machine>(std::make_shared<Walking>())),
 	_up(false), _down(false), _left(false), _right(false)
 {
@@ -11,32 +11,32 @@ Agent::Agent() :
 }
 
 
-Agent::~Agent()
+Actor::~Actor()
 {
 
 }
 
-void Agent::tick()
+void Actor::tick()
 {
 	handleInput();
 
 	_machine->tick();
 }
 
-void Agent::reason()
+void Actor::reason()
 {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
 	{
-		_machine->setState("Running");
+		_machine->changeState("Running");
 	}
 	else
 	{
-		_machine->setState("Walking");
+		_machine->changeState("Walking");
 	}
 
 }
 
-void Agent::handleInput()
+void Actor::handleInput()
 {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && !_up)
 	{

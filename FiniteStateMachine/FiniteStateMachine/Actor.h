@@ -3,11 +3,11 @@
 #include <SFML\Window\Event.hpp>
 #include <SFML\Window\Window.hpp>
 
-class Agent
+class Actor
 {
 public:
-	Agent();
-	~Agent();
+	Actor();
+	~Actor();
 
 	void tick();
 	void reason();

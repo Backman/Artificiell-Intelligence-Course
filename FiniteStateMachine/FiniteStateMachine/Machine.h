@@ -23,7 +23,7 @@ public:
 		_states[state->getName()] = state;
 	}
 
-	void setState(const std::string& stateName)
+	void changeState(const std::string& stateName)
 	{
 		if (stateName != _currentState->getName())
 		{

@@ -11,9 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{269F221E-B1FB-4668-A97A-8B77E006921F}</ProjectGuid>
+    <ProjectGuid>{55E000B4-4532-4FC0-8690-670BDFBE0A97}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>FiniteStateMachine</RootNamespace>
+    <RootNamespace>DungeonGeneration</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -59,7 +59,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>..\..\Dependencies\lib\SFML-2.1\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>sfml-system-d.lib;sfml-window-d.lib;sfml-graphics-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>sfml-main-d.lib;sfml-system-d.lib;sfml-window-d.lib;sfml-graphics-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -81,19 +81,25 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Actor.cpp" />
-    <ClCompile Include="Machine.cpp" />
+    <ClCompile Include="Assert.cpp" />
+    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Cell.cpp" />
+    <ClCompile Include="DungeonGenerator.cpp" />
+    <ClCompile Include="Engine.cpp" />
+    <ClCompile Include="ImageManager.cpp" />
+    <ClCompile Include="Level.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Running.cpp" />
-    <ClCompile Include="State.cpp" />
-    <ClCompile Include="Walking.cpp" />
+    <ClCompile Include="Tile.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Actor.h" />
-    <ClInclude Include="Machine.h" />
-    <ClInclude Include="Running.h" />
-    <ClInclude Include="State.h" />
-    <ClInclude Include="Walking.h" />
+    <ClInclude Include="Assert.h" />
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="Cell.h" />
+    <ClInclude Include="DungeonGenerator.h" />
+    <ClInclude Include="Engine.h" />
+    <ClInclude Include="ImageManager.h" />
+    <ClInclude Include="Level.h" />
+    <ClInclude Include="Tile.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

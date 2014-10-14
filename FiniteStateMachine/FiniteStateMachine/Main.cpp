@@ -2,7 +2,7 @@
 #include <string>
 
 #include "Machine.h"
-#include "Agent.h"
+#include "Actor.h"
 
 #include "SFML\Graphics.hpp"
 
@@ -10,7 +10,7 @@ void handleKeyEvent(sf::Event::KeyEvent keyEvt, sf::Window& window);
 
 int main()
 {
-	Agent agent;
+	Actor actor;
 
 	sf::Window window(sf::VideoMode(200, 200), "Finite State Machine");
 
@@ -28,8 +28,8 @@ int main()
 			}
 		}
 
-		agent.reason();
-		agent.tick();
+		actor.reason();
+		actor.tick();
 	}
 
 	return 0;
