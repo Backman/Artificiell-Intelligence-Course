@@ -11,7 +11,7 @@ public:
 	DungeonGenerator(int width, int height);
 	~DungeonGenerator();
 
-	void generate(int cellCount, int cellSize, int minSize, int maxSize);
+	void generate(int cellCount, int tileSize, int minSize, int maxSize);
 
 	void render(sf::RenderWindow* window);
 
@@ -20,7 +20,7 @@ public:
 	void fillGaps();
 
 private:
-	void init(int cellCount, int cellSize, int minSize, int maxSize);
+	void init(int cellCount, int tileSize, int minSize, int maxSize);
 	bool computeSeparation(Cell* cell, sf::Vector2f& pos);
 
 	void clearCells();
@@ -33,6 +33,6 @@ private:
 	int _cellCount;
 
 	int _width, _height;
-	int _cellSize;
+	int _tileSize;
 };
 

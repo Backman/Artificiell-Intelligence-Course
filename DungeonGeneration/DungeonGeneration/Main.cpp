@@ -11,7 +11,7 @@ int main()
 	sf::RenderWindow window(sf::VideoMode(800, 600), "Dungeon Generator");
 
 	DungeonGenerator generator(800, 600);
-	generator.generate(150, 10, 2, 7);
+	generator.generate(150, 5, 2, 10);
 
 	while (window.isOpen())
 	{

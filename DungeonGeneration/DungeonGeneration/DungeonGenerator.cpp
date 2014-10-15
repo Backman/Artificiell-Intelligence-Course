@@ -29,10 +29,10 @@ void DungeonGenerator::clearCells()
 	}
 }
 
-void DungeonGenerator::generate(int cellCount, int cellSize, int minSize, int maxSize)
+void DungeonGenerator::generate(int cellCount, int tileSize, int minSize, int maxSize)
 {
 	_done = false;
-	init(cellCount, cellSize, minSize, maxSize);
+	init(cellCount, tileSize, minSize, maxSize);
 }
 
 bool DungeonGenerator::seperate()
@@ -104,10 +104,10 @@ void DungeonGenerator::fillGaps()
 
 }
 
-void DungeonGenerator::init(int cellCount, int cellSize, int minSize, int maxSize)
+void DungeonGenerator::init(int cellCount, int tileSize, int minSize, int maxSize)
 {
 	_cellCount = cellCount;
-	_cellSize = cellSize;
+	_tileSize = tileSize;
 
 	clearCells();
 
@@ -126,8 +126,8 @@ void DungeonGenerator::init(int cellCount, int cellSize, int minSize, int maxSiz
 	{
 		int width, height, x, y;
 
-		width = dSize(g) * cellSize;
-		height = dSize(g) * cellSize;
+		width = dSize(g) * tileSize;
+		height = dSize(g) * tileSize;
 		x = dPos(g);
 		y = dPos(g);
 
@@ -150,9 +150,9 @@ bool DungeonGenerator::computeSeparation(Cell* cell, sf::Vector2f& pos)
 	sf::Vector2f originPos = cell->getPosition();
 	sf::Vector2f otherPos;
 
-	float dx, dy;
+	float dx, dy, dxSqr, dySqr, distSqr, dist;
 
-	float c = 5;
+	float c = _tileSize * 2;
 
 	for (auto& other : _cells)
 	{
@@ -160,69 +160,76 @@ bool DungeonGenerator::computeSeparation(Cell* cell, sf::Vector2f& pos)
 		{
 			otherPos = other->getPosition();
 
-			dx = otherPos.x - originPos.x;
-			dy = otherPos.y - originPos.y;
+			dx = originPos.x - otherPos.x;
+			dy = originPos.y - otherPos.y;
+			dxSqr = dx*dx;
+			dySqr = dy*dy;
 
-			float len = (dx*dx + dy*dy);
+			distSqr = (dxSqr + dySqr);
+			dist = sqrt(distSqr);
 
-			pos.x += dx * 0.3f;// 1 / len;
-			pos.y += dy * 0.3f;// 1 / len;
-
-			//if (dx != 0.0f)
-			//{
-			//	float dxSqr = dx*dx;
-			//
-			//	//if (dx <= 0.0f)
-			//	{
-			//		pos.x += c / dx;
-			//	}
-			//}
-			//if (dy != 0.0f)
-			//{
-			//	float dySqr = dy*dy;
-			//	//if (dy <= 0.0f)
-			//	{
-			//		pos.y += c / dy;
-			//	}
-			//}
-			if (cell->intersects(*other))
+			if (dx != 0.0f)
+			{
+				//pos.x -= c / dist;
+				if (dx <= 0.0f)
+				{
+					pos.x -= c / dist;
+				}
+				else
+				{
+					pos.x += c / dist;
+				}
+			}
+			if (dy != 0.0f)
+			{
+				//pos.y -= c / dist;
+				if (dy <= 0.0f)
+				{
+					pos.y -= c / dist;
+				}
+				else
+				{
+					pos.y += c / dist;
+				}
+			}
+			if (/*cell->intersects(*other)*/distSqr < 5 * _tileSize)
 			{
 				ret = true;
 
-				
-
 				//pos -= sf::Vector2f(dx*dx, dy*dy);
 
-				/*if (dx != 0.0f)
-				{
-					float dxSqr = dx*dx;
-					
-					if (dx <= 0.0f)
-					{
-						pos.x += c / dxSqr;
-					}
-					else
-					{
-						pos.x -= c / dxSqr;
-					}
-				}
-				if (dy != 0.0f)
-				{
-					float dySqr = dy*dy;
-					if (dy <= 0.0f)
-					{
-						pos.y += c / dySqr;
-					}
-					else
-					{
-						pos.y -= c / dySqr;
-					}
-				}*/
+				//if (dx != 0.0f)
+				//{
+				//	//pos.x -= c / dx;// * 0.03f;
+				//	float dxSqr = dx*dx;
+				//	
+				//	if (dx <= 0.0f)
+				//	{
+				//		pos.x += c / len;
+				//	}
+				//	else
+				//	{
+				//		pos.x -= c / len;
+				//	}
+				//}
+				//if (dy != 0.0f)
+				//{
+				//	//pos.y -= c / dy;// * 0.03f;
+				//	float dySqr = dy*dy;
+				//	if (dy <= 0.0f)
+				//	{
+				//		pos.y += c / len;
+				//	}
+				//	else
+				//	{
+				//		pos.y -= c / len;
+				//	}
+				//}
 			}
 		}
 	}
 
-	pos *= -1.0f;
+	//pos *= -1.0f;
 
 	return ret;
 }
