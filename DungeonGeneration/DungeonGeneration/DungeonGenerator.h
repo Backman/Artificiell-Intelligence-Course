@@ -15,9 +15,10 @@ public:
 
 	void render(sf::RenderWindow* window);
 
-	bool seperate();
-
+	void seperate();
 	void fillGaps();
+	void pickCells(int minThreshold, int maxThreshold);
+	void constructGraph();
 
 private:
 	void init(int cellCount, int tileSize, int minSize, int maxSize);
@@ -27,9 +28,9 @@ private:
 
 	typedef std::vector<Cell*> Cells;
 	Cells _cells;
-	Cells _fillCell;
+	Cells _fillCells;
 
-	bool _done;
+	bool _doneSeparation;
 	int _cellCount;
 
 	int _width, _height;

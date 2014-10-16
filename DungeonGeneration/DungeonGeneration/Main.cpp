@@ -1,17 +1,22 @@
-#include "engine.h"
 #include "DungeonGenerator.h"
+#include "BSPDungeon.h"
+#include "Level.h"
 
 int main()
 {
-	//Engine e(640, 480, 32);
-	//
-	//e.start();
+	srand(time(NULL));
 
+	sf::RenderWindow window(sf::VideoMode(1024, 760), "Dungeon Generator");
 
-	sf::RenderWindow window(sf::VideoMode(800, 600), "Dungeon Generator");
+	Level l;
+	l.init(500, 500, 10);
 
-	DungeonGenerator generator(800, 600);
+	DungeonGenerator generator(1024, 760);
 	generator.generate(150, 5, 2, 10);
+
+	BSPDungeon bsp;
+
+	//bsp.generate(500, 500, 8);
 
 	while (window.isOpen())
 	{
@@ -25,17 +30,16 @@ int main()
 
 			if (evt.key.code == sf::Keyboard::R)
 			{
-				generator.generate(150, 10, 2, 7);
+				generator.generate(30, 5, 3, 6);
 			}
 		}
 
-		if (generator.seperate())
-		{
+		//generator.seperate();
 
-		}
-
-		window.clear();
+		window.clear(sf::Color(0.2f * 255, 0.2f * 255, 0.2f * 255, 255));
+		//l.render(&window);
 		generator.render(&window);
+		//bsp.render(&window);
 		window.display();
 	}
 

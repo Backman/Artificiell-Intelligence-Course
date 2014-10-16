@@ -1,7 +1,7 @@
 #pragma once
 
+#include <SFML\Graphics.hpp>
 #include <vector>
-#include "ImageManager.h"
 
 class Tile;
 
@@ -11,23 +11,18 @@ public:
 	Level();
 	~Level();
 
-	void initLevel(int width, int height, ImageManager& imageManager);
+	void init(int width, int height, int tileSize);
 
-	void render(sf::IntRect bounds, int tileSize, int camOffsetX, int camOffsetY, sf::RenderWindow* window);
+	void render(sf::RenderWindow* window);
 
 	void addTile(int x, int y, Tile* tile);
 	Tile* getTile(int x, int y) const;
 
-	int getWidth() const;
-	int getHeight() const;
-
 private:
 	void setDimensions(int width, int height);
 
-
-	typedef std::vector<std::vector<Tile*>> TileGrid;
-	TileGrid _tileGrid;
-
+	std::vector<std::vector<Tile*>> _tileGrid;
 	int _width, _height;
+	int _tileSize;
 };
 

@@ -22,24 +22,38 @@ void DungeonGenerator::clearCells()
 		_cells.pop_back();
 	}
 
-	while (!_cells.empty())
+	while (!_fillCells.empty())
 	{
-		delete _cells.back();
-		_cells.pop_back();
+		delete _fillCells.back();
+		_fillCells.pop_back();
 	}
 }
 
 void DungeonGenerator::generate(int cellCount, int tileSize, int minSize, int maxSize)
 {
-	_done = false;
+	_doneSeparation = false;
 	init(cellCount, tileSize, minSize, maxSize);
+	while (true)
+	{
+		seperate();
+		if (_doneSeparation)
+		{
+			break;
+		}
+	}
+	
+	//fillGaps();
+
+	int minThreshold = 5;
+	int maxThreshold = 7;
+	pickCells(minThreshold, maxThreshold);
 }
 
-bool DungeonGenerator::seperate()
+void DungeonGenerator::seperate()
 {
-	if (_done)
+	if (_doneSeparation)
 	{
-		return true;
+		return;
 	}
 
 	bool overlap = false;
@@ -53,55 +67,80 @@ bool DungeonGenerator::seperate()
 		if (seperate)
 		{
 			overlap = true;
-			v = cell->getPosition() + v;
+			sf::Vector2f center(cell->getCenter().x, cell->getCenter().y);
+			v = center + v;
 
 			cell->setPosition(v);
 		}
 	}
-
-	_done = !overlap;
-
 	if (!overlap)
 	{
 		std::cout << "DONE SEPARATING!" << std::endl;
 
-		return true;
+		_doneSeparation = true;
 	}
-
-	return false;
 }
 
 void DungeonGenerator::fillGaps()
 {
-	float xMax = -1000.0f, yMax = -1000.0f;
-	float xMin = 1000.0f, yMin = 1000.0f;
+	int xMax = -999999, yMax = -999999;
+	int xMin = 999999, yMin = 999999;
 
-	float x, y;
+	int left, right, top, bottom;
 
 	for (auto& cell : _cells)
 	{
-		x = cell->getPosition().x;
-		y = cell->getPosition().y;
+		left = cell->getLeft();
+		right = cell->getRight();
+		top = cell->getTop();
+		bottom = cell->getBottom();
 
-		if (x < xMin)
+		if (left < xMin)
 		{
-			xMin = x;
+			xMin = left;
 		}
-		if (x > xMax)
+		if (right > xMax)
 		{
-			xMax = x;
+			xMax = right;
 		}
-		if (y < yMin)
+		if (top < yMin)
 		{
-			yMin = y;
+			yMin = top;
 		}
-		if (y > yMax)
+		if (bottom > yMax)
 		{
-			yMax = y;
+			yMax = bottom;
 		}
 	}
 
+	for (int x = xMin; x < xMax; x += _tileSize)
+	{
+		for (int y = yMin; y < yMax; y += _tileSize)
+		{
+			Cell* cell = new Cell(_tileSize, x, y, 1, 1, sf::Color(0.2f * 255, 0.2f * 255, 0.2f * 255, 255));
+			_fillCells.push_back(cell);
+		}
+	}
+}
 
+void DungeonGenerator::pickCells(int minThreshold, int maxThreshold)
+{
+	minThreshold *= _tileSize;
+	maxThreshold *= _tileSize;
+	std::vector<Cell*>::iterator it;
+	for (it = _cells.begin(); it != _cells.end();)
+	{
+		Cell* cell = *it;
+		if (cell->getWidth() < minThreshold || cell->getWidth() > maxThreshold ||
+			cell->getHeight() < minThreshold || cell->getHeight() > maxThreshold)
+		{
+			it = _cells.erase(it);
+		}
+		else
+		{
+			++it;
+		}
+	}
 }
 
 void DungeonGenerator::init(int cellCount, int tileSize, int minSize, int maxSize)
@@ -111,32 +150,33 @@ void DungeonGenerator::init(int cellCount, int tileSize, int minSize, int maxSiz
 
 	clearCells();
 
-	float radius = std::min<int>(_width, _height) / 2;
+	int radius = std::min<int>(_width, _height) / 2;
 	
 	std::minstd_rand g;
 	g.seed(time(NULL));
 	
 	std::uniform_int_distribution<> dSize(minSize, maxSize);
 	std::uniform_int_distribution<> dPos(radius - (radius / 2), radius + (radius / 2));
-	//std::uniform_int_distribution<> dPos(250, 350);
 
-
+	int width, height, x, y;
 
 	for (int i = 0; i < cellCount; ++i)
 	{
-		int width, height, x, y;
-
-		width = dSize(g) * tileSize;
-		height = dSize(g) * tileSize;
+		width = dSize(g);
+		height = dSize(g);
 		x = dPos(g);
 		y = dPos(g);
 
-		_cells.push_back(new Cell(x, y, width, height, i));
+		_cells.push_back(new Cell(tileSize, x, y, width, height));
 	}
 }
 
 void DungeonGenerator::render(sf::RenderWindow* window)
 {
+	for (auto& cell : _fillCells)
+	{
+		cell->render(window);
+	}
 	for (auto& cell : _cells)
 	{
 		cell->render(window);
@@ -147,18 +187,18 @@ bool DungeonGenerator::computeSeparation(Cell* cell, sf::Vector2f& pos)
 {
 	//return false;
 	bool ret = false;
-	sf::Vector2f originPos = cell->getPosition();
-	sf::Vector2f otherPos;
+	sf::Vector2i originPos = cell->getCenter();
+	sf::Vector2i otherPos;
 
-	float dx, dy, dxSqr, dySqr, distSqr, dist;
+	int dx, dy, dxSqr, dySqr, distSqr, dist;
 
-	float c = _tileSize * 2;
+	float c = _tileSize * 2.0f;
 
 	for (auto& other : _cells)
 	{
-		if (*other != *cell)
+		if (other != cell)
 		{
-			otherPos = other->getPosition();
+			otherPos = other->getCenter();
 
 			dx = originPos.x - otherPos.x;
 			dy = originPos.y - otherPos.y;
@@ -170,7 +210,6 @@ bool DungeonGenerator::computeSeparation(Cell* cell, sf::Vector2f& pos)
 
 			if (dx != 0.0f)
 			{
-				//pos.x -= c / dist;
 				if (dx <= 0.0f)
 				{
 					pos.x -= c / dist;
@@ -182,7 +221,6 @@ bool DungeonGenerator::computeSeparation(Cell* cell, sf::Vector2f& pos)
 			}
 			if (dy != 0.0f)
 			{
-				//pos.y -= c / dist;
 				if (dy <= 0.0f)
 				{
 					pos.y -= c / dist;
@@ -192,39 +230,11 @@ bool DungeonGenerator::computeSeparation(Cell* cell, sf::Vector2f& pos)
 					pos.y += c / dist;
 				}
 			}
-			if (/*cell->intersects(*other)*/distSqr < 5 * _tileSize)
+
+
+			if (cell->intersects(*other))
 			{
 				ret = true;
-
-				//pos -= sf::Vector2f(dx*dx, dy*dy);
-
-				//if (dx != 0.0f)
-				//{
-				//	//pos.x -= c / dx;// * 0.03f;
-				//	float dxSqr = dx*dx;
-				//	
-				//	if (dx <= 0.0f)
-				//	{
-				//		pos.x += c / len;
-				//	}
-				//	else
-				//	{
-				//		pos.x -= c / len;
-				//	}
-				//}
-				//if (dy != 0.0f)
-				//{
-				//	//pos.y -= c / dy;// * 0.03f;
-				//	float dySqr = dy*dy;
-				//	if (dy <= 0.0f)
-				//	{
-				//		pos.y += c / len;
-				//	}
-				//	else
-				//	{
-				//		pos.y -= c / len;
-				//	}
-				//}
 			}
 		}
 	}
@@ -232,4 +242,9 @@ bool DungeonGenerator::computeSeparation(Cell* cell, sf::Vector2f& pos)
 	//pos *= -1.0f;
 
 	return ret;
+}
+
+void DungeonGenerator::constructGraph()
+{
+
 }

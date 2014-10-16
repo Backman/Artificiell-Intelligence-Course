@@ -2,31 +2,40 @@
 
 #include <SFML\Graphics.hpp>
 
+class Tile;
+
 class Cell
 {
 public:
-	Cell(int x, int y, int width, int height, int idx);
+	Cell(int tileSize, int x, int y, int width, int height, sf::Color color = sf::Color::White);
 	~Cell();
 
 	void render(sf::RenderWindow* window);
 
-	sf::Vector2f getPosition() const;
+	sf::Vector2i getCenter() const;
 	void setPosition(sf::Vector2f pos);
-	void setPosition(int x, int y);
 	void setPosition(float x, float y);
 
 	bool intersects(const Cell& other) const;
 
-	sf::IntRect getRect() const;
+	int getLeft() const;
+	int getRight() const;
+	int getTop() const;
+	int getBottom() const;
 
-	void setIndex(int index);
-
-	bool operator==(const Cell& rhs) const;
-	bool operator!=(const Cell& rhs) const;
+	int getWidth() const;
+	int getHeight() const;
 
 private:
-	sf::IntRect _rect;
+	Tile* getTile(int x, int y);
+	void setDimensions(int width, int height);
+	void destoryTiles();
+
+	sf::Vector2i _pos;
+	sf::Vector2i _size;
+
+	int _tileSize;
 	sf::RectangleShape _shape;
-	int _index;
+	std::vector<std::vector<Tile*>> _tiles;
 };
 

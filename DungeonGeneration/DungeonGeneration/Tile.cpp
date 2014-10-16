@@ -1,13 +1,12 @@
 #include "Tile.h"
-#include "Assert.h"
 
-Tile::Tile(sf::Image& image)
+Tile::Tile(int size, sf::Color color) :
+	_shape(sf::Vector2f((float)size - 1.0f, (float)size - 1.0f))
 {
-	ASSERT(_texture.loadFromImage(image));
-
-	_sprite.setTexture(_texture);
+	_shape.setOutlineThickness(1.0f);
+	_shape.setOutlineColor(sf::Color::Red);
+	_shape.setFillColor(sf::Color::Transparent);
 }
-
 
 Tile::~Tile()
 {
@@ -15,6 +14,7 @@ Tile::~Tile()
 
 void Tile::render(int x, int y, sf::RenderWindow* window)
 {
-	_sprite.setPosition(x, y);
-	window->draw(_sprite);
+	_shape.setPosition(x, y);
+
+	window->draw(_shape);
 }
