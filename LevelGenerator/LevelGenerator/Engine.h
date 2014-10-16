@@ -1,0 +1,30 @@
+#pragma once
+
+#include <SFML\Graphics.hpp>
+
+class Map;
+class MapGenerator;
+
+class Engine
+{
+public:
+	Engine(int windowWidth, int windowHeight, const std::string& title);
+	~Engine();
+
+	void run(MapGenerator* generator = nullptr);
+	bool init(MapGenerator* generator = nullptr);
+
+private:
+	void mainLoop();
+	void tick();
+	void render();
+	void processEvent();
+
+	bool _initialized;
+	std::string _title;
+	Map* _currentMap;
+	sf::RenderWindow* _window;
+	sf::VideoMode _videoMode;
+	MapGenerator* _generator;
+};
+
