@@ -13,7 +13,7 @@ public:
 	TKGenerator();
 	~TKGenerator();
 
-	void initGenerator(int cellCount, int tileSize, int minSize, int maxSize, int minRoomThreshold, int maxRoomThreshold);
+	void initGenerator(int cellCount, int tileSize, int minSize, int maxSize, int minCellThreshold, int maxCellThreshold);
 	virtual Map* generate() override;
 
 	void render(sf::RenderWindow* rw);
