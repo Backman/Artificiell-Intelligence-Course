@@ -18,12 +18,15 @@ void TKGenerator::clearCells()
 	Utility::clearPointerVector<TKCell>(&_cells);
 }
 
-void TKGenerator::initGenerator(int cellCount, int tileSize, int minSize, int maxSize)
+void TKGenerator::initGenerator(int cellCount, int tileSize, int minSize, int maxSize, int minCellThreshold, int maxCellThreshold)
 {
 	_initialized = true;
 	createCells(cellCount, tileSize, minSize, maxSize);
 	_cellCount = cellCount;
 	_tileSize = tileSize;
+
+	_minCellThreshold = minCellThreshold;
+	_maxCellThreshold = maxCellThreshold;
 }
 
 void TKGenerator::createCells(int cellCount, int tileSize, int minSize, int maxSize)

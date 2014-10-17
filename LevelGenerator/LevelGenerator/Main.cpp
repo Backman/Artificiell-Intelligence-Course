@@ -7,7 +7,13 @@ int main()
 	Engine e(1024, 760, "Level Generator");
 	
 	TKGenerator gen;
-	gen.initGenerator(50, 10, 4, 10);
+
+	int cellCount = 50;
+	int tileSize = 10;
+	int minCellSize = 4;
+	int maxCellSize = 10;
+
+	gen.initGenerator(cellCount, tileSize, minCellSize, maxCellSize);
 
 	e.run(&gen);
 	

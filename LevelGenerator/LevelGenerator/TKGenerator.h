@@ -13,7 +13,7 @@ public:
 	TKGenerator();
 	~TKGenerator();
 
-	void initGenerator(int cellCount, int tileSize, int minSize, int maxSize);
+	void initGenerator(int cellCount, int tileSize, int minSize, int maxSize, int minRoomThreshold, int maxRoomThreshold);
 	virtual Map* generate() override;
 
 	void render(sf::RenderWindow* rw);
@@ -30,6 +30,7 @@ private:
 
 	int _cellCount;
 	int _tileSize;
+	int _minCellThreshold, _maxCellThreshold;
 	bool _initialized = false;
 	bool _doSeparation = true;
 };
