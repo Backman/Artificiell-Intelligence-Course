@@ -10,7 +10,7 @@ public:
 
 	void render(int x, int y, sf::RenderWindow* rw);
 
-	void setColor(sf::Color color);
+	void setOutlineColor(sf::Color color);
 
 private:
 	int _tileSize;

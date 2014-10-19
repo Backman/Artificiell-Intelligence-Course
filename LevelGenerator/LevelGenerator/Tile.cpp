@@ -7,7 +7,6 @@ Tile::Tile(int tileSize, sf::Color color) :
 {
 	_shape.setFillColor(sf::Color::Transparent);
 
-	_shape.setOutlineColor(sf::Color::Red);
 	_shape.setOutlineThickness(1.0f);
 }
 
@@ -23,7 +22,7 @@ void Tile::render(int x, int y, sf::RenderWindow* rw)
 	rw->draw(_shape);
 }
 
-void Tile::setColor(sf::Color color)
+void Tile::setOutlineColor(sf::Color color)
 {
-	_shape.setFillColor(color);
+	_shape.setOutlineColor(color);
 }

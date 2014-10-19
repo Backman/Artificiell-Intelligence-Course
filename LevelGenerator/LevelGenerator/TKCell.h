@@ -23,8 +23,15 @@ public:
 	int getRight() const;
 	int getTop() const;
 	int getBottom() const;
+	
+	int getWidth() const;
+	int getHeight() const;
 
 	bool intersects(TKCell& other) const;
+	bool containsPoint(int x, int y) const;
+
+	void setColor(sf::Color& color);
+	void setTileOutlineColor(sf::Color& color);
 
 private:
 	int _rows, _cols;

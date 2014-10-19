@@ -31,11 +31,6 @@ sf::Vector2f TKCell::getCenter() const
 	return sf::Vector2f(_pos.x + (_size.x / 2), _pos.y + (_size.y / 2));
 }
 
-//sf::Vector2f TKCell::getPosition() const
-//{
-//	return _pos;
-//}
-
 void TKCell::setPosition(sf::Vector2f newPos)
 {	
 	_pos.x = newPos.x - (_size.x / 2);
@@ -68,6 +63,16 @@ int TKCell::getBottom() const
 	return _pos.y + _size.y;
 }
 
+int TKCell::getWidth() const
+{
+	return _size.x;
+}
+
+int TKCell::getHeight() const
+{
+	return _size.y;
+}
+
 bool TKCell::intersects(TKCell& other) const
 {
 	bool cond1, cond2, cond3, cond4;
@@ -81,32 +86,41 @@ bool TKCell::intersects(TKCell& other) const
 	return cond1 && cond2 && cond3 && cond4;
 }
 
-void TKCell::render(sf::RenderWindow* rw)
+bool TKCell::containsPoint(int x, int y) const
 {
-	int w = _size.x / _tileSize;
-	int h = _size.y / _tileSize;
+	sf::FloatRect rect(_pos.x, _pos.y, _size.x, _size.y);
 
-	sf::RectangleShape shape(_size);
-	shape.setPosition(_pos);
-	shape.setFillColor(sf::Color::White);
-	rw->draw(shape);
+	return rect.contains(x, y);
+}
 
-	/*Tile* tile;
+void TKCell::setColor(sf::Color& color)
+{
+	_color = color;
+}
+
+void TKCell::setTileOutlineColor(sf::Color& color)
+{
 	for (int y = 0; y < _cols; ++y)
 	{
 		for (int x = 0; x < _rows; ++x)
 		{
-			tile = _tileGrid->getTile(x, y);
-
-			if (tile != nullptr)
+			Tile* t = _tileGrid->getTile(x, y);
+			if (t != nullptr)
 			{
-				int xPos = _pos.x + _tileSize*x;
-				int yPos = _pos.y + _tileSize*y;
-
-				tile->render(xPos, yPos, rw);
+				t->setOutlineColor(color);
 			}
 		}
-	}*/
+	}
+}
+
+void TKCell::render(sf::RenderWindow* rw)
+{
+
+	sf::RectangleShape shape(_size);
+	shape.setPosition(_pos);
+	shape.setFillColor(_color);
+	//rw->draw(shape);
+
 
 	_tileGrid->render(_pos, _tileSize, rw);
 }
