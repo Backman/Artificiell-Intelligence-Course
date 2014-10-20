@@ -105,6 +105,7 @@ void TKGenerator::seperate()
 		fillEmptySpace();
 		filterCells(_cells, _minCellThreshold, _maxCellThreshold);
 		delunayTriangulation();
+		createCorridors();
 		_doSeparation = false;
 	}
 }
@@ -338,22 +339,46 @@ void TKGenerator::constructMST()
 	{
 		_mst.addEdge(parent[i], i);
 	}
+
+	_mst.printGraph();
 }
 
 void TKGenerator::createCorridors()
 {
 	std::vector<sf::FloatRect> connections;
+	std::map<int, int> _map;
+	int rectSize = 2;
 	for (int i = 0; i < _mst.getVertexCount(); ++i)
 	{
 		for (int j = 0; j < _mst.getVertexCount(); ++j)
 		{
+			if (_map[j] == i)
+				continue;
+
 			int edge = _mst.getEdge(i, j);
 			if (edge > 0)
 			{
-				sf::Vector2f diff = _vertices[i] - _vertices[j];
-				float x = std::abs(diff.x);
-				float y = std::abs(diff.y);
 				
+
+				_map[i] = j;
+				sf::Vector2f v1 = _vertices[i];
+				sf::Vector2f v2 = _vertices[j];
+
+				float xDiff = v2.x - v1.x;
+				float yDiff = v1.y - v2.y;
+
+				sf::FloatRect r1(v1.x, v1.y - (rectSize / 2), xDiff, rectSize);
+				sf::FloatRect r2(v2.x - (rectSize / 2), v2.y, 4, yDiff);
+
+				float random = Utility::randomFloatRange();
+				/*if (random < 0.75)
+				{
+					r1 = sf::FloatRect(v1.x, v1.y - 2, -xDiff, 4);
+					r2 = sf::FloatRect(v2.x - 2, v2.y, 4, yDiff);
+				}*/
+
+				_rects.push_back(r1);
+				_rects.push_back(r2);
 			}
 		}
 	}
@@ -372,6 +397,14 @@ void TKGenerator::render(sf::RenderWindow* rw)
 	for (auto& cell : _filteredCells)
 	{
 		cell->render(rw);
+	}
+
+	for (auto& rect : _rects)
+	{
+		sf::RectangleShape s(sf::Vector2f(rect.width, rect.height));
+		s.setPosition(rect.left, rect.top);
+		s.setFillColor(sf::Color::Cyan);
+		rw->draw(s);
 	}
 
 	for (int i = 0; i < _mst.getVertexCount(); ++i)

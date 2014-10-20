@@ -37,6 +37,7 @@ private:
 	void constructMST();
 	void createCorridors();
 
+	std::vector<sf::FloatRect> _rects;
 	Cells _corridors;
 	Cells _emptyCells;
 	Cells _cells;
