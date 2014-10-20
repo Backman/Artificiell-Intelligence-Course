@@ -342,15 +342,18 @@ void TKGenerator::constructMST()
 
 void TKGenerator::createCorridors()
 {
-	std::vector<sf::Vector2f> connections;
+	std::vector<sf::FloatRect> connections;
 	for (int i = 0; i < _mst.getVertexCount(); ++i)
 	{
 		for (int j = 0; j < _mst.getVertexCount(); ++j)
 		{
-			int vert = _mst.getEdge(i, j);
-			if (vert > 0)
+			int edge = _mst.getEdge(i, j);
+			if (edge > 0)
 			{
-				connections.push_back(_vertices[i]);
+				sf::Vector2f diff = _vertices[i] - _vertices[j];
+				float x = std::abs(diff.x);
+				float y = std::abs(diff.y);
+				
 			}
 		}
 	}
