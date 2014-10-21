@@ -20,6 +20,8 @@ public:
 	Graph(int vertexCount);
 	~Graph();
 
+	void clearGraph();
+
 	void init(int vertexCount);
 
 	void addEdge(int i, int j);

@@ -12,12 +12,26 @@ Graph::Graph(int vertexCount) :
 
 Graph::~Graph()
 {
+	clearGraph();
+}
+
+void Graph::clearGraph()
+{
+	_vertexCount = 0;
 	for (int i = 0; i < _vertexCount; ++i)
 	{
-		delete[] _adjMatrix[i];
+		if (_adjMatrix[i] != nullptr)
+		{
+			delete[] _adjMatrix[i];
+			_adjMatrix[i] = nullptr;
+		}
 	}
 
-	delete[] _adjMatrix;
+	if (_adjMatrix != nullptr)
+	{
+		delete[] _adjMatrix;
+		_adjMatrix = nullptr;
+	}
 }
 
 void Graph::init(int vertexCount)

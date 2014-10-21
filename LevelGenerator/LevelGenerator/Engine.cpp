@@ -18,14 +18,19 @@ Engine::~Engine()
 	Utility::deletePointer<Map>(_currentMap);
 }
 
-void Engine::run(MapGenerator* generator)
+void Engine::run()
 {
-	ASSERT_MSG(init(generator), "Failed to initialize Engine...");
+	ASSERT_MSG(init(), "Failed to initialize Engine...");
 
 	mainLoop();
 }
 
-bool Engine::init(MapGenerator* generator)
+void Engine::setGenerator(MapGenerator* generator)
+{
+	_generator = generator;
+}
+
+bool Engine::init()
 {
 	if (!_initialized)
 	{
@@ -36,13 +41,7 @@ bool Engine::init(MapGenerator* generator)
 			return false;
 		}
 
-		if (generator != nullptr)
-		{
-			_generator = generator;
-			//_generator->generate();
-			//_currentMap = generator->generate();
-		}
-		else
+		if (_generator == nullptr)
 		{
 			std::cerr << "No generator... Creating basic grid" << std::endl;
 			_currentMap = new Map;
@@ -98,6 +97,18 @@ void Engine::processEvent()
 		if (type == sf::Event::Closed || key.code == sf::Keyboard::Escape)
 		{
 			_window->close();
+		}
+
+		if (key.code == sf::Keyboard::R)
+		{
+			int cellCount = 80;
+			int tileSize = 8;
+			int minCellSize = 4;
+			int maxCellSize = 10;
+			int minCellThreshold = 5;
+			int maxCellThrehsold = 7;
+
+			((TKGenerator*)_generator)->initGenerator(cellCount, tileSize, minCellSize, maxCellSize, minCellThreshold, maxCellThrehsold);
 		}
 	}
 }

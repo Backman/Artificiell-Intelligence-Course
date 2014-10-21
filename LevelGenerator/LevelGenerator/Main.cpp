@@ -10,11 +10,11 @@
 int main()
 {
 	srand(time(NULL));
-	Engine e(1920, 1080, "Level Generator");
+	Engine e(1280, 720, "Level Generator");
 	
 	TKGenerator gen;
 
-	int cellCount = 50;
+	int cellCount = 80;
 	int tileSize = 8;
 	int minCellSize = 4;
 	int maxCellSize = 10;
@@ -22,8 +22,8 @@ int main()
 	int maxCellThrehsold = 7;
 
 	gen.initGenerator(cellCount, tileSize, minCellSize, maxCellSize, minCellThreshold, maxCellThrehsold);
-
-	e.run(&gen);
+	e.setGenerator(&gen);
+	e.run();
 	
 	//sf::RenderWindow window(sf::VideoMode(1024, 760), "Generator");
 

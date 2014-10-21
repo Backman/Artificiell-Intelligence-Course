@@ -2,8 +2,14 @@
 
 #include <vector>
 #include <SFML\Graphics.hpp>
+#include "TileGrid.h";
 
-class TileGrid;
+enum class Status
+{
+	AVAILABLE,
+	UNAVAILABLE,
+	FILL
+};
 
 class TKCell
 {
@@ -27,19 +33,25 @@ public:
 	int getWidth() const;
 	int getHeight() const;
 
-	bool intersects(TKCell& other) const;
+	bool intersects(TKCell& other, sf::FloatRect& intersection) const;
+	bool intersects(const sf::FloatRect& other) const;
 	bool containsPoint(int x, int y) const;
 
 	void setColor(sf::Color& color);
 	void setTileOutlineColor(sf::Color& color);
 
+	Status getStatus() const;
+	void setStatus(Status s);
+
 private:
+
 	int _rows, _cols;
 	int _tileSize;
+	Status _status;
 	sf::Color _color;
 
 	sf::Vector2f _pos;
 	sf::Vector2f _size;
-	TileGrid* _tileGrid;
+	TileGrid _tileGrid;
 };
 

@@ -6,7 +6,6 @@ TileGrid::TileGrid()
 {
 }
 
-
 TileGrid::~TileGrid()
 {
 	clearTiles();
@@ -14,12 +13,16 @@ TileGrid::~TileGrid()
 
 void TileGrid::clearTiles()
 {
-	for (int i = 0; i < _grid.size(); ++i)
+	if (_grid.size() > 1)
 	{
-		Utility::clearPointerVector<Tile>(&_grid[i]);
+		int k = 0;
 	}
 
-	_grid.clear();
+	while (!_grid.empty())
+	{
+		Utility::clearPointerVector<Tile>(&_grid.back());
+		_grid.pop_back();
+	}
 }
 
 void TileGrid::initGrid(int width, int height, int tileSize)

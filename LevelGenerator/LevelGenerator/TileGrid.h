@@ -18,8 +18,8 @@ public:
 	void render(sf::Vector2f pos, int tileSize, sf::RenderWindow* rw);
 
 private:
-	void setDimensions(int width, int height);
 	void clearTiles();
+	void setDimensions(int width, int height);
 
 	std::vector<std::vector<Tile*>> _grid;
 };

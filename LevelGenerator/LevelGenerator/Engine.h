@@ -11,8 +11,10 @@ public:
 	Engine(int windowWidth, int windowHeight, const std::string& title);
 	~Engine();
 
-	void run(MapGenerator* generator = nullptr);
-	bool init(MapGenerator* generator = nullptr);
+	void run();
+	bool init();
+
+	void setGenerator(MapGenerator* generator);
 
 private:
 	void mainLoop();

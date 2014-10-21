@@ -9,10 +9,10 @@ TKCell::TKCell(int tileSize, int x, int y, int width, int height) :
 	_tileSize(tileSize),
 	_pos(x, y),
 	_size(width * tileSize, height * tileSize),
-	_rows(width), _cols(height)
+	_rows(width), _cols(height),
+	_status(Status::AVAILABLE)
 {
-	_tileGrid = new TileGrid;
-	_tileGrid->initGrid(width, height, tileSize);
+	_tileGrid.initGrid(width, height, tileSize);
 
 	_color = sf::Color(Utility::randomFloatRange() * 255,
 		Utility::randomFloatRange() * 255,
@@ -23,7 +23,7 @@ TKCell::TKCell(int tileSize, int x, int y, int width, int height) :
 
 TKCell::~TKCell()
 {
-	Utility::deletePointer<TileGrid>(_tileGrid);
+	
 }
 
 sf::Vector2f TKCell::getCenter() const
@@ -73,17 +73,30 @@ int TKCell::getHeight() const
 	return _size.y;
 }
 
-bool TKCell::intersects(TKCell& other) const
+bool TKCell::intersects(TKCell& other, sf::FloatRect& intersection) const
 {
+	sf::FloatRect r1(_pos, _size);
+	sf::FloatRect r2(other._pos, other._size + sf::Vector2f(_tileSize, _tileSize));
+	sf::FloatRect inter;
+
+	return r1.intersects(r2, intersection);
+	
 	bool cond1, cond2, cond3, cond4;
 
-	cond1 = getLeft() <= other.getRight();
-	cond2 = getRight() >= other.getLeft();
+	cond1 = getLeft() < (other.getRight() + _tileSize);
+	cond2 = getRight() > (other.getLeft() + _tileSize);
 	
-	cond3 = getTop() <= other.getBottom();
-	cond4 = getBottom() >= other.getTop();
+	cond3 = getTop() < (other.getBottom() + _tileSize);
+	cond4 = getBottom() > (other.getTop() + _tileSize);
 
-	return cond1 && cond2 && cond3 && cond4;
+	//return cond1 && cond2 && cond3 && cond4;
+}
+
+bool TKCell::intersects(const sf::FloatRect& other) const
+{
+	sf::FloatRect r(_pos, _size);
+
+	return r.intersects(other);
 }
 
 bool TKCell::containsPoint(int x, int y) const
@@ -104,7 +117,7 @@ void TKCell::setTileOutlineColor(sf::Color& color)
 	{
 		for (int x = 0; x < _rows; ++x)
 		{
-			Tile* t = _tileGrid->getTile(x, y);
+			Tile* t = _tileGrid.getTile(x, y);
 			if (t != nullptr)
 			{
 				t->setOutlineColor(color);
@@ -113,14 +126,26 @@ void TKCell::setTileOutlineColor(sf::Color& color)
 	}
 }
 
+Status TKCell::getStatus() const
+{
+	return _status;
+}
+
+void TKCell::setStatus(Status s)
+{
+	_status = s;
+}
+
 void TKCell::render(sf::RenderWindow* rw)
 {
 
 	sf::RectangleShape shape(_size);
 	shape.setPosition(_pos);
-	shape.setFillColor(_color);
-	//rw->draw(shape);
+	shape.setOutlineColor(sf::Color::White);
+	shape.setOutlineThickness(1.0f);
+	shape.setFillColor(sf::Color::Transparent);
+	rw->draw(shape);
 
 
-	_tileGrid->render(_pos, _tileSize, rw);
+	//_tileGrid.render(_pos, _tileSize, rw);
 }
