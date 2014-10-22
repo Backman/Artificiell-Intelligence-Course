@@ -49,12 +49,15 @@ void TKGenerator::createCells(int cellCount, int tileSize, int minSize, int maxS
 
 	int rad = cellCount * 2;
 
+	int wRad = 640;
+	int hRad = 360;
+
 	for (int i = 0; i < cellCount; ++i)
 	{
-		x = Utility::randomFloatRange(rad - (rad / 2), rad + (rad / 2));
+		x = Utility::randomFloatRange(wRad - (wRad / 2), wRad + (wRad / 2));
 		x = ((x / tileSize) + 1) * tileSize;
 
-		y = Utility::randomFloatRange(rad - (rad / 2), rad + (rad / 2));
+		y = Utility::randomFloatRange(hRad - (hRad / 2), hRad + (hRad / 2));
 		y = ((y / tileSize) + 1) * tileSize;
 
 		width = Utility::randomIntRange(minSize, maxSize);
@@ -102,25 +105,25 @@ void TKGenerator::seperate()
 	{
 		std::cout << "DONE SEPARATING!" << std::endl;
 
-		std::cout << "Fill empty space" << std::endl;
-		fillEmptySpace();
+		std::cout << "Filling gaps" << std::endl;
+		//fillEmptySpace();
 
-		std::cout << "Filter cells" << std::endl;
-		filterCells(_cells, _minCellThreshold, _maxCellThreshold);
+		std::cout << "Filtering cells" << std::endl;
+		filterCells();
 
-		std::cout << "Triangulation" << std::endl;
+		std::cout << "Triangulating" << std::endl;
 		delunayTriangulation();
 
-		std::cout << "Construct graph" << std::endl;
+		std::cout << "Constructing graph" << std::endl;
 		constructGraph();
 
-		std::cout << "Cosntruct MST" << std::endl;
+		std::cout << "Finding MST" << std::endl;
 		constructMST();
 
-		std::cout << "Create corridors" << std::endl;
+		std::cout << "Creating corridors" << std::endl;
 		createCorridors();
 
-		std::cout << "Create map grid" << std::endl;
+		std::cout << "Creating map grid" << std::endl;
 		createMapGrid();
 
 		std::cout << "DONE!" << std::endl;
@@ -233,10 +236,10 @@ void TKGenerator::fillEmptySpace()
 	}
 }
 
-void TKGenerator::filterCells(Cells& cells, int minThreshold, int maxThreshold)
+void TKGenerator::filterCells()
 {
-	minThreshold *= _tileSize;
-	maxThreshold *= _tileSize;
+	int minThreshold = _minCellThreshold * _tileSize;
+	int maxThreshold = _maxCellThreshold * _tileSize;
 	Cells::iterator it;
 
 	for (auto& c : _cells)
@@ -378,15 +381,8 @@ void TKGenerator::createCorridors()
 				float yDiff = v1.y - v2.y;
 
 				sf::FloatRect r1(v1.x, v1.y - (rectSize / 2), xDiff, rectSize);
-				sf::FloatRect r2(v2.x - (rectSize / 2), v2.y, 4, yDiff);
-
-				float random = Utility::randomFloatRange();
-				/*if (random < 0.75)
-				{
-					r1 = sf::FloatRect(v1.x, v1.y - 2, -xDiff, 4);
-					r2 = sf::FloatRect(v2.x - 2, v2.y, 4, yDiff);
-				}*/
-
+				sf::FloatRect r2(v2.x - (rectSize / 2), v2.y, rectSize, yDiff);
+				
 				connections.push_back(r1);
 				connections.push_back(r2);
 			}
@@ -401,7 +397,7 @@ void TKGenerator::createCorridors()
 			{
 				float chance = Utility::randomFloatRange();
 
-				if (chance > 0.75f)
+				if (chance > 0.75f && _mst.getEdge(i, j) < 1)
 				{
 					sf::Vector2f v1 = _vertices[i];
 					sf::Vector2f v2 = _vertices[j];
@@ -410,7 +406,7 @@ void TKGenerator::createCorridors()
 					float yDiff = v1.y - v2.y;
 
 					sf::FloatRect r1(v1.x, v1.y - (rectSize / 2), xDiff, rectSize);
-					sf::FloatRect r2(v2.x - (rectSize / 2), v2.y, 4, yDiff);
+					sf::FloatRect r2(v2.x - (rectSize / 2), v2.y, rectSize, yDiff);
 					
 					connections.push_back(r1);
 					connections.push_back(r2);
@@ -439,19 +435,58 @@ void TKGenerator::createCorridors()
 			}
 		}
 
-		for (Cells::iterator it = _emptyCells.begin(); it != _emptyCells.end();)
+
+
+		/*for (Cells::iterator it = _emptyCells.begin(); it != _emptyCells.end();)
 		{
 
 			if ((*it)->intersects(rect))
 			{
-				TKCell* c = new TKCell(*(*it));
-				_cells.push_back(c);
+				//TKCell* c = new TKCell(*);
+				_cells.push_back((*it));
 
 				it = _emptyCells.erase(it);
 			}
 			else
 			{
 				++it;
+			}
+		}*/
+	}
+
+	for (auto& rect : connections)
+	{
+		float x = rect.left;
+		float y = rect.top;
+		float w = rect.width;
+		float h = rect.height;
+
+		int c = 1;
+
+		if (w != rectSize)
+		{
+			if (w < 0.0f)
+			{
+				w *= -1.0f;
+				c *= -1;
+			}
+			for (int i = 0; i < w; i += _tileSize)
+			{
+				TKCell* cell = new TKCell(_tileSize, x + (i * c), y, 1, 1);
+				_cells.push_back(cell);
+			}
+		}
+		else if (h != rectSize)
+		{
+			if (h < 0.0f)
+			{
+				h *= -1.0f;
+				c *= -1;
+			}
+			for (int i = 0; i < h; i += _tileSize)
+			{
+				TKCell* cell = new TKCell(_tileSize, x, y + (i * c), 1, 1);
+				_cells.push_back(cell);
 			}
 		}
 	}
@@ -473,11 +508,8 @@ void TKGenerator::render(sf::RenderWindow* rw)
 		//cell->render(rw);
 	}
 	for (auto& cell : _cells)
-	{
-		if (cell->getStatus() == Status::AVAILABLE)
-		{
-			cell->render(rw);
-		}
+	
+		cell->render(rw);
 	}
 
 
@@ -518,7 +550,6 @@ void TKGenerator::render(sf::RenderWindow* rw)
 
 
 				rw->draw(line);
-
 			}
 		}
 	}

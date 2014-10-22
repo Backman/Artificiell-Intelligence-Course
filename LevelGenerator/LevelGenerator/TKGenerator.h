@@ -32,7 +32,7 @@ private:
 
 	bool computeSeparation(TKCell* currCell, sf::Vector2f& outPos);
 	void fillEmptySpace();
-	void filterCells(Cells& cells, int minThreshold, int maxThreshold);
+	void filterCells();
 	void delunayTriangulation();
 	void constructGraph();
 	void constructMST();
