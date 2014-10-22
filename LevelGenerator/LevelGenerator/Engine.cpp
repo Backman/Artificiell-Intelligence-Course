@@ -101,11 +101,11 @@ void Engine::processEvent()
 
 		if (key.code == sf::Keyboard::R)
 		{
-			int cellCount = 80;
-			int tileSize = 8;
-			int minCellSize = 4;
-			int maxCellSize = 10;
-			int minCellThreshold = 5;
+			int cellCount = 150;
+			int tileSize = 3;
+			int minCellSize = 2;
+			int maxCellSize = 15;
+			int minCellThreshold = 4;
 			int maxCellThrehsold = 7;
 
 			((TKGenerator*)_generator)->initGenerator(cellCount, tileSize, minCellSize, maxCellSize, minCellThreshold, maxCellThrehsold);

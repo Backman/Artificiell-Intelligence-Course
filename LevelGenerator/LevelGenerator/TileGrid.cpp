@@ -76,6 +76,30 @@ Tile* TileGrid::getTile(int x, int y) const
 	return nullptr;
 }
 
+TileType TileGrid::getTileType(int x, int y) const
+{
+	if (x < _grid.capacity())
+	{
+		if (y < _grid[x].capacity())
+		{
+			return _grid[x][y]->getTileType();
+		}
+	}
+
+	return TileType::Empty;
+}
+
+void TileGrid::setTileType(int x, int y, TileType type)
+{
+	if (x < _grid.capacity())
+	{
+		if (y < _grid[x].capacity())
+		{
+			return _grid[x][y]->setTileType(type);
+		}
+	}
+}
+
 void TileGrid::render(sf::Vector2f pos, int tileSize, sf::RenderWindow* rw)
 {
 	for (int y = 0; y < _grid[0].size(); ++y)

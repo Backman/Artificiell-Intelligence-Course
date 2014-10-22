@@ -3,7 +3,8 @@
 #include <SFML\Graphics.hpp>
 #include <vector>
 
-class Tile;
+#include "Tile.h"
+
 
 class TileGrid
 {
@@ -16,6 +17,9 @@ public:
 	void addTile(int x, int y, Tile* tile);
 
 	void render(sf::Vector2f pos, int tileSize, sf::RenderWindow* rw);
+
+	TileType getTileType(int x, int y) const;
+	void setTileType(int x, int y, TileType type);
 
 private:
 	void clearTiles();

@@ -2,6 +2,7 @@
 
 #include "MapGenerator.h"
 #include "Graph.h"
+#include "TileGrid.h"
 #include <Thor/Math/Triangulation.hpp>
 #include <Thor/Vectors/VectorAlgebra2D.hpp>
 #include <vector>
@@ -36,6 +37,9 @@ private:
 	void constructGraph();
 	void constructMST();
 	void createCorridors();
+	void createMapGrid();
+
+	void getMinMax(int& xMin, int& xMax, int& yMin, int& yMax) const;
 
 	Cells _emptyCells;
 	Cells _cells;
@@ -44,10 +48,13 @@ private:
 	Triangles _triangles;
 	Points _vertices;
 
+	TileGrid _mapGrid;
+
 	int _cellCount;
 	int _tileSize;
 	int _minCellThreshold, _maxCellThreshold;
 	bool _initialized = false;
 	bool _doSeparation = true;
+	int _xMin, _xMax, _yMin, _yMax;
 };
 

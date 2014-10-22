@@ -47,15 +47,14 @@ void TKGenerator::createCells(int cellCount, int tileSize, int minSize, int maxS
 
 	TKCell* cell;
 
-	float wRadius = 512;
-	float hRadius = 380;
+	int rad = cellCount * 2;
 
 	for (int i = 0; i < cellCount; ++i)
 	{
-		x = Utility::randomFloatRange(wRadius - (wRadius / 2), wRadius + (wRadius / 2));
+		x = Utility::randomFloatRange(rad - (rad / 2), rad + (rad / 2));
 		x = ((x / tileSize) + 1) * tileSize;
 
-		y = Utility::randomFloatRange(hRadius - (hRadius / 2), hRadius + (hRadius / 2));
+		y = Utility::randomFloatRange(rad - (rad / 2), rad + (rad / 2));
 		y = ((y / tileSize) + 1) * tileSize;
 
 		width = Utility::randomIntRange(minSize, maxSize);
@@ -85,6 +84,22 @@ void TKGenerator::seperate()
 {
 	if (!_doSeparation)
 	{
+		
+		return;
+	}
+
+	bool overlap = false;
+	for (auto& cell : _cells)
+	{
+		sf::Vector2f v;
+		if (computeSeparation(cell, v))
+		{
+			overlap = true;
+		}
+	}
+
+	if (!overlap)
+	{
 		std::cout << "DONE SEPARATING!" << std::endl;
 
 		std::cout << "Fill empty space" << std::endl;
@@ -105,18 +120,10 @@ void TKGenerator::seperate()
 		std::cout << "Create corridors" << std::endl;
 		createCorridors();
 
-		return;
-	}
+		std::cout << "Create map grid" << std::endl;
+		createMapGrid();
 
-	bool overlap = false;
-	for (auto& cell : _cells)
-	{
-		sf::Vector2f v;
-		overlap = computeSeparation(cell, v);
-	}
-
-	if (!overlap)
-	{
+		std::cout << "DONE!" << std::endl;
 		_doSeparation = false;
 	}
 }
@@ -127,14 +134,14 @@ bool TKGenerator::computeSeparation(TKCell* currCell, sf::Vector2f& outPos)
 	sf::Vector2f cellPos;
 	sf::Vector2f otherPos;
 
-
 	sf::Vector2f newPos;
+
 	for (auto& other : _cells)
 	{
 		if (other != currCell)
 		{
 			sf::FloatRect intersection;
-			if (currCell->intersects(*other, intersection))
+			if (other->intersects(*currCell, intersection))
 			{
 				float y = 0.0f;
 				float x = 0.0f;
@@ -145,18 +152,11 @@ bool TKGenerator::computeSeparation(TKCell* currCell, sf::Vector2f& outPos)
 				float xDiff = otherPos.x - cellPos.x;
 				float yDiff = otherPos.y - cellPos.y;
 
-				float distSqr = xDiff*xDiff + yDiff*yDiff;
+				x -= xDiff;
+				x = ((x / _tileSize) + 1) * _tileSize;
 
-				float w = intersection.width;
-				float h = intersection.height;
-				
-				if (w == h)
-				{
-					h = 0.0f;
-				}
-
-				x = xDiff < 0.0f ? x + w : x - w;
-				y = yDiff < 0.0f ? y + h : y - h;
+				y -= yDiff;
+				y = ((y / _tileSize) + 1) * _tileSize;
 
 				newPos += sf::Vector2f(x, y);
 
@@ -170,12 +170,12 @@ bool TKGenerator::computeSeparation(TKCell* currCell, sf::Vector2f& outPos)
 	return ret;
 }
 
-void TKGenerator::fillEmptySpace()
+void TKGenerator::getMinMax(int& xMin, int& xMax, int& yMin, int& yMax) const
 {
-	int xMin = std::numeric_limits<int>::max();
-	int xMax = std::numeric_limits<int>::min();
-	int yMin = std::numeric_limits<int>::max();
-	int yMax = std::numeric_limits<int>::min();
+	xMin = std::numeric_limits<int>::max();
+	xMax = std::numeric_limits<int>::min();
+	yMin = std::numeric_limits<int>::max();
+	yMax = std::numeric_limits<int>::min();
 
 	for (auto& c : _cells)
 	{
@@ -201,16 +201,21 @@ void TKGenerator::fillEmptySpace()
 			yMax = bottom;
 		}
 	}
+}
 
-	for (int x = xMin; x < xMax; x += _tileSize)
+void TKGenerator::fillEmptySpace()
+{
+	getMinMax(_xMin, _xMax, _yMin, _yMax);
+
+	for (int x = _xMin; x < _xMax; x += _tileSize)
 	{
-		for (int y = yMin; y < yMax; y += _tileSize)
+		for (int y = _yMin; y < _yMax; y += _tileSize)
 		{
 			bool shouldAddCell = true;
 
 			for (auto& c : _cells)
 			{
-				if (c->getLeft() <= x && c->getTop() <= y &&
+				if (c->getLeft() < (x + _tileSize) && c->getTop() < (y + _tileSize) &&
 					c->getRight() > x && c->getBottom() > y)
 				{
 					shouldAddCell = false;
@@ -221,8 +226,7 @@ void TKGenerator::fillEmptySpace()
 			if (shouldAddCell)
 			{
 				TKCell* cell = new TKCell(_tileSize, x, y, 1, 1);
-				//_cells.push_back(cell);
-				//cell->setTileOutlineColor(sf::Color(255, 0, 0, 50));
+
 				_emptyCells.push_back(cell);
 			}
 		}
@@ -246,25 +250,6 @@ void TKGenerator::filterCells(Cells& cells, int minThreshold, int maxThreshold)
 			c->setStatus(Status::UNAVAILABLE);
 		}
 	}
-
-	/*TKCell* cell;
-	for (it = cells.begin(); it != cells.end();)
-	{
-		cell = *it;
-		int width = cell->getWidth();
-		int height = cell->getHeight();
-		if (width < minThreshold || width > maxThreshold ||
-			height < minThreshold || height > maxThreshold)
-		{
-			(*it)->setTileOutlineColor(sf::Color(255, 255, 0, 128));
-			++it;
-		}
-		else
-		{
-			_filteredCells.push_back(*it);
-			it = cells.erase(it);
-		}
-	}*/
 }
 
 void TKGenerator::delunayTriangulation()
@@ -372,7 +357,7 @@ void TKGenerator::createCorridors()
 {
 	std::vector<sf::FloatRect> connections;
 	std::map<int, int> _map;
-	int rectSize = 2;
+	int rectSize = 1;
 	for (int i = 0; i < _mst.getVertexCount(); ++i)
 	{
 		for (int j = 0; j < _mst.getVertexCount(); ++j)
@@ -416,7 +401,7 @@ void TKGenerator::createCorridors()
 			{
 				float chance = Utility::randomFloatRange();
 
-				if (chance > 0.65f)
+				if (chance > 0.75f)
 				{
 					sf::Vector2f v1 = _vertices[i];
 					sf::Vector2f v2 = _vertices[j];
@@ -437,6 +422,9 @@ void TKGenerator::createCorridors()
 			}
 		}
 	}
+
+	float minThreshold = _minCellThreshold * _tileSize;
+	float maxThreshold = _maxCellThreshold * _tileSize;
 
 	for (auto& rect : connections)
 	{
@@ -469,6 +457,15 @@ void TKGenerator::createCorridors()
 	}
 }
 
+void TKGenerator::createMapGrid()
+{
+	int n = std::max(_xMax - _xMin, _yMax - _yMin);
+
+	//_mapGrid.initGrid(n, n, _tileSize);
+	
+	//_mst.printGraph();
+}
+
 void TKGenerator::render(sf::RenderWindow* rw)
 {
 	for (auto& cell : _emptyCells)
@@ -499,7 +496,7 @@ void TKGenerator::render(sf::RenderWindow* rw)
 				line[1].color = sf::Color::Green;
 
 
-				//rw->draw(line);
+				rw->draw(line);
 
 			}
 		}
@@ -520,7 +517,7 @@ void TKGenerator::render(sf::RenderWindow* rw)
 				line[1].color = sf::Color::Cyan;
 
 
-				//rw->draw(line);
+				rw->draw(line);
 
 			}
 		}
