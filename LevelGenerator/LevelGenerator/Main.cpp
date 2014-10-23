@@ -14,12 +14,12 @@ int main()
 	
 	TKGenerator gen;
 
-	int cellCount = 80;
-	int tileSize = 3;
-	int minCellSize = 5;
-	int maxCellSize = 15;
+	int cellCount = 60;
+	int tileSize = 8;
+	int minCellSize = 4;
+	int maxCellSize = 12;
 	int minCellThreshold = 5;
-	int maxCellThrehsold = 9;
+	int maxCellThrehsold = 7;
 
 	gen.initGenerator(cellCount, tileSize, minCellSize, maxCellSize, minCellThreshold, maxCellThrehsold);
 	e.setGenerator(&gen);

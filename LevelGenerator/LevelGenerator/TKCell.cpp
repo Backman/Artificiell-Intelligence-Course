@@ -81,20 +81,20 @@ bool TKCell::intersects(TKCell& other, sf::FloatRect& intersection) const
 
 	return r1.intersects(r2, intersection);
 	
-	bool cond1, cond2, cond3, cond4;
-
-	cond1 = getLeft() < (other.getRight() + _tileSize);
-	cond2 = getRight() > (other.getLeft() + _tileSize);
+	//bool cond1, cond2, cond3, cond4;
 	
-	cond3 = getTop() < (other.getBottom() + _tileSize);
-	cond4 = getBottom() > (other.getTop() + _tileSize);
+	//cond1 = getLeft() < (other.getRight() + _tileSize);
+	//cond2 = getRight() > (other.getLeft() + _tileSize);
+	
+	//cond3 = getTop() < (other.getBottom() + _tileSize);
+	//cond4 = getBottom() > (other.getTop() + _tileSize);
 
 	//return cond1 && cond2 && cond3 && cond4;
 }
 
 bool TKCell::intersects(const sf::FloatRect& other) const
 {
-	sf::FloatRect r(_pos, _size);
+	sf::FloatRect r(_pos, _size + sf::Vector2f(_tileSize, _tileSize));
 
 	return r.intersects(other);
 }
@@ -138,14 +138,19 @@ void TKCell::setStatus(Status s)
 
 void TKCell::render(sf::RenderWindow* rw)
 {
+	if (_status == Status::UNAVAILABLE)
+	{
+		return;
+	}
 
 	sf::RectangleShape shape(_size);
 	shape.setPosition(_pos);
-	shape.setOutlineColor(sf::Color::White);
+	shape.setOutlineColor(sf::Color::Red);
 	shape.setOutlineThickness(1.0f);
 	shape.setFillColor(sf::Color::Transparent);
+
+
+	_tileGrid.render(_pos, _tileSize, rw);
 	rw->draw(shape);
 
-
-	//_tileGrid.render(_pos, _tileSize, rw);
 }

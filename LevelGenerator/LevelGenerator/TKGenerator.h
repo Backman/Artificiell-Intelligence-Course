@@ -52,6 +52,7 @@ private:
 
 	int _cellCount;
 	int _tileSize;
+	int _minCellSize, _maxCellSize;
 	int _minCellThreshold, _maxCellThreshold;
 	bool _initialized = false;
 	bool _doSeparation = true;
