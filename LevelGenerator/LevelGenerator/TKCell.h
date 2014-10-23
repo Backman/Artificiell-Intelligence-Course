@@ -33,7 +33,7 @@ public:
 	int getWidth() const;
 	int getHeight() const;
 
-	bool intersects(TKCell& other, sf::FloatRect& intersection) const;
+	bool intersects(TKCell& other) const;
 	bool intersects(const sf::FloatRect& other) const;
 	bool containsPoint(int x, int y) const;
 

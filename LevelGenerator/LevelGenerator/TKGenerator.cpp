@@ -114,9 +114,9 @@ void TKGenerator::seperate()
 		
 		std::cout << "Creating corridors" << std::endl;
 		createCorridors();
-		//
-		//std::cout << "Creating map grid" << std::endl;
-		//createMapGrid();
+		
+		std::cout << "Creating map grid" << std::endl;
+		createMapGrid();
 
 		std::cout << "DONE!" << std::endl;
 		_doSeparation = false;
@@ -134,8 +134,7 @@ bool TKGenerator::computeSeparation(TKCell* currCell, sf::Vector2f& outPos)
 	{
 		if (other != currCell)
 		{
-			sf::FloatRect intersection;
-			if (currCell->intersects(*other, intersection))
+			if (currCell->intersects(*other))
 			{
 				float y = 0.0f;
 				float x = 0.0f;
@@ -356,7 +355,7 @@ void TKGenerator::createCorridors()
 {
 	std::vector<sf::FloatRect> connections;
 	std::map<int, int> map;
-	int rectSize = _tileSize;
+	int rectSize = 2 * _tileSize;
 	for (int i = 0; i < _mst.getVertexCount(); ++i)
 	{
 		for (int j = 0; j < _mst.getVertexCount(); ++j)
@@ -375,14 +374,14 @@ void TKGenerator::createCorridors()
 				sf::Vector2f v1 = _vertices[i];
 				sf::Vector2f v2 = _vertices[j];
 
-				int xDiff = v2.x - v1.x;
-				int yDiff = v1.y - v2.y;
+				float xDiff = v2.x - v1.x;
+				float yDiff = v1.y - v2.y;
 
-				int w  = int((xDiff / _tileSize) + 0.5) * _tileSize;
+				int w = int((xDiff / _tileSize) + 0.5) * _tileSize;
 				int h = int((yDiff / _tileSize) + 0.5) * _tileSize;
 
-				sf::FloatRect r1(v1.x, v1.y - (_tileSize / 2), w, _tileSize);
-				sf::FloatRect r2(v2.x - (_tileSize / 2), v2.y, _tileSize, h);
+				sf::FloatRect r1(v1.x, v1.y - (rectSize / 2), w, rectSize);
+				sf::FloatRect r2(v2.x - (rectSize / 2), v2.y, rectSize, h);
 				
 				connections.push_back(r1);
 				connections.push_back(r2);
@@ -398,7 +397,7 @@ void TKGenerator::createCorridors()
 			{
 				float chance = Utility::randomFloatRange();
 
-				if (chance > 0.75f && _mst.getEdge(i, j) < 1)
+				if (chance > 0.5f && _mst.getEdge(i, j) < 1)
 				{
 					sf::Vector2f v1 = _vertices[i];
 					sf::Vector2f v2 = _vertices[j];
@@ -409,8 +408,8 @@ void TKGenerator::createCorridors()
 					int w = int((xDiff / _tileSize) + 0.5) * _tileSize;
 					int h = int((yDiff / _tileSize) + 0.5) * _tileSize;
 
-					sf::FloatRect r1(v1.x, v1.y - (_tileSize / 2), w, _tileSize);
-					sf::FloatRect r2(v2.x - (_tileSize / 2), v2.y, _tileSize, h);
+					sf::FloatRect r1(v1.x, v1.y - (rectSize / 2), w, rectSize);
+					sf::FloatRect r2(v2.x - (rectSize / 2), v2.y, rectSize, h);
 					
 					connections.push_back(r1);
 					connections.push_back(r2);
@@ -423,7 +422,7 @@ void TKGenerator::createCorridors()
 		}
 	}
 
-
+	Cells newCells;
 	for (auto& rect : connections)
 	{
 		for (auto& c : _cells)
@@ -437,16 +436,12 @@ void TKGenerator::createCorridors()
 			}
 		}
 
-
-
 		for (Cells::iterator it = _emptyCells.begin(); it != _emptyCells.end();)
 		{
-
 			if ((*it)->intersects(rect))
 			{
 				TKCell* c = new TKCell(*(*it));
 				_cells.push_back((*it));
-
 
 				it = _emptyCells.erase(it);
 			}
@@ -457,7 +452,7 @@ void TKGenerator::createCorridors()
 		}
 	}
 
-	//Utility::clearPointerVector<TKCell>(&_emptyCells);
+	Utility::clearPointerVector<TKCell>(&_emptyCells);
 }
 
 void TKGenerator::createMapGrid()
@@ -471,6 +466,10 @@ void TKGenerator::createMapGrid()
 
 void TKGenerator::render(sf::RenderWindow* rw)
 {
+	for (auto& cell : _emptyCells)
+	{
+		//cell->render(rw);
+	}
 	for (auto& cell : _cells)
 	{	
 		cell->render(rw);
@@ -516,4 +515,12 @@ void TKGenerator::render(sf::RenderWindow* rw)
 			}
 		}
 	}
+
+	/*for (auto& rect : connections)
+	{
+		sf::RectangleShape s(sf::Vector2f(rect.width, rect.height));
+		s.setPosition(rect.left, rect.top);
+		s.setFillColor(sf::Color::Magenta);
+		rw->draw(s);
+	}*/
 }

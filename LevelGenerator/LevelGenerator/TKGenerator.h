@@ -47,6 +47,7 @@ private:
 	Graph _mst;
 	Triangles _triangles;
 	Points _vertices;
+	//std::vector<sf::FloatRect> connections;
 
 	TileGrid _mapGrid;
 

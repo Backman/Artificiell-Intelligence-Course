@@ -73,13 +73,13 @@ int TKCell::getHeight() const
 	return _size.y;
 }
 
-bool TKCell::intersects(TKCell& other, sf::FloatRect& intersection) const
+bool TKCell::intersects(TKCell& other) const
 {
 	sf::FloatRect r1(_pos, _size);
 	sf::FloatRect r2(other._pos, other._size + sf::Vector2f(_tileSize, _tileSize));
 	sf::FloatRect inter;
 
-	return r1.intersects(r2, intersection);
+	return r1.intersects(r2);
 	
 	//bool cond1, cond2, cond3, cond4;
 	
@@ -94,7 +94,7 @@ bool TKCell::intersects(TKCell& other, sf::FloatRect& intersection) const
 
 bool TKCell::intersects(const sf::FloatRect& other) const
 {
-	sf::FloatRect r(_pos, _size + sf::Vector2f(_tileSize, _tileSize));
+	sf::FloatRect r(_pos, _size);// +sf::Vector2f(_tileSize, _tileSize));
 
 	return r.intersects(other);
 }
@@ -145,7 +145,7 @@ void TKCell::render(sf::RenderWindow* rw)
 
 	sf::RectangleShape shape(_size);
 	shape.setPosition(_pos);
-	shape.setOutlineColor(sf::Color::Red);
+	shape.setOutlineColor(sf::Color(255, 0, 0, 128));
 	shape.setOutlineThickness(1.0f);
 	shape.setFillColor(sf::Color::Transparent);
 
