@@ -2,7 +2,6 @@
 #include "TKCell.h"
 #include "Utility.h"
 
-#include <Aurora\Tools\ForEach.hpp>
 #include <iostream>
 
 TKGenerator::TKGenerator()
@@ -32,7 +31,8 @@ void TKGenerator::initGenerator(int cellCount, int tileSize, int minSize, int ma
 	createCells(cellCount, tileSize, minSize, maxSize);
 	_cellCount = cellCount;
 	_tileSize = tileSize;
-
+	_minCellSize = minSize;
+	_maxCellSize = maxSize;
 	_minCellThreshold = minCellThreshold;
 	_maxCellThreshold = maxCellThreshold;
 
@@ -70,22 +70,14 @@ void TKGenerator::createCells(int cellCount, int tileSize, int minSize, int maxS
 }
 
 Map* TKGenerator::generate()
-{
-	_doSeparation = true;
-	//if (_initialized)
-	//{
-	//	while (_doSeparation)
-	//	{
-	//		seperate();
-	//	}
-	//}
-	
+{	
+	initGenerator(_cellCount, _tileSize, _minCellSize, _maxCellSize, _minCellThreshold, _maxCellThreshold);
 	return nullptr;
 }
-
+int count = 0;
 void TKGenerator::seperate()
 {
-	if (!_doSeparation)
+	if (!_doSeparation || (++count) % 2 == 0)
 	{
 		
 		return;
@@ -106,7 +98,7 @@ void TKGenerator::seperate()
 		std::cout << "DONE SEPARATING!" << std::endl;
 
 		std::cout << "Filling gaps" << std::endl;
-		//fillEmptySpace();
+		fillEmptySpace();
 
 		std::cout << "Filtering cells" << std::endl;
 		filterCells();
@@ -116,13 +108,13 @@ void TKGenerator::seperate()
 
 		std::cout << "Constructing graph" << std::endl;
 		constructGraph();
-
+		
 		std::cout << "Finding MST" << std::endl;
 		constructMST();
-
+		
 		std::cout << "Creating corridors" << std::endl;
 		createCorridors();
-
+		
 		std::cout << "Creating map grid" << std::endl;
 		createMapGrid();
 
@@ -138,13 +130,11 @@ bool TKGenerator::computeSeparation(TKCell* currCell, sf::Vector2f& outPos)
 	sf::Vector2f otherPos;
 
 	sf::Vector2f newPos;
-
 	for (auto& other : _cells)
 	{
 		if (other != currCell)
 		{
-			sf::FloatRect intersection;
-			if (other->intersects(*currCell, intersection))
+			if (currCell->intersects(*other))
 			{
 				float y = 0.0f;
 				float x = 0.0f;
@@ -155,19 +145,24 @@ bool TKGenerator::computeSeparation(TKCell* currCell, sf::Vector2f& outPos)
 				float xDiff = otherPos.x - cellPos.x;
 				float yDiff = otherPos.y - cellPos.y;
 
-				x -= xDiff;
-				x = ((x / _tileSize) + 1) * _tileSize;
+				x = xDiff < 0.0f ? x + _tileSize : x - _tileSize;
+				y = yDiff < 0.0f ? y + _tileSize : y - _tileSize;
 
-				y -= yDiff;
-				y = ((y / _tileSize) + 1) * _tileSize;
+				//x -= xDiff;
+				//x = ((x / _tileSize) + 1) * _tileSize;
+				//
+				//y -= yDiff;
+				//y = ((y / _tileSize) + 1) * _tileSize;
 
 				newPos += sf::Vector2f(x, y);
+
+				other->setPosition(other->getCenter() + sf::Vector2f(-x, -y));
 
 				ret = true;
 			}
 		}
 	}
-
+	
 	currCell->setPosition(currCell->getCenter() + newPos);
 
 	return ret;
@@ -218,8 +213,8 @@ void TKGenerator::fillEmptySpace()
 
 			for (auto& c : _cells)
 			{
-				if (c->getLeft() < (x + _tileSize) && c->getTop() < (y + _tileSize) &&
-					c->getRight() > x && c->getBottom() > y)
+				if (c->containsPoint(x, y)/*c->getLeft() < (x + _tileSize) && c->getTop() < (y + _tileSize) &&
+					c->getRight() > x && c->getBottom() > y*/)
 				{
 					shouldAddCell = false;
 					break;
@@ -359,13 +354,14 @@ void TKGenerator::constructMST()
 void TKGenerator::createCorridors()
 {
 	std::vector<sf::FloatRect> connections;
-	std::map<int, int> _map;
-	int rectSize = 1;
+	std::map<int, int> map;
+	int rectSize = 2 * _tileSize;
 	for (int i = 0; i < _mst.getVertexCount(); ++i)
 	{
 		for (int j = 0; j < _mst.getVertexCount(); ++j)
 		{
-			if (_map[j] == i)
+			
+			if (map[j] == i)
 				continue;
 
 			int edge = _mst.getEdge(i, j);
@@ -373,15 +369,19 @@ void TKGenerator::createCorridors()
 			{
 				
 
-				_map[i] = j;
+				map[i] = j;
+				map[j] = i;
 				sf::Vector2f v1 = _vertices[i];
 				sf::Vector2f v2 = _vertices[j];
 
 				float xDiff = v2.x - v1.x;
 				float yDiff = v1.y - v2.y;
 
-				sf::FloatRect r1(v1.x, v1.y - (rectSize / 2), xDiff, rectSize);
-				sf::FloatRect r2(v2.x - (rectSize / 2), v2.y, rectSize, yDiff);
+				int w = int((xDiff / _tileSize) + 0.5) * _tileSize;
+				int h = int((yDiff / _tileSize) + 0.5) * _tileSize;
+
+				sf::FloatRect r1(v1.x, v1.y - (rectSize / 2), w, rectSize);
+				sf::FloatRect r2(v2.x - (rectSize / 2), v2.y, rectSize, h);
 				
 				connections.push_back(r1);
 				connections.push_back(r2);
@@ -397,7 +397,7 @@ void TKGenerator::createCorridors()
 			{
 				float chance = Utility::randomFloatRange();
 
-				if (chance > 0.75f && _mst.getEdge(i, j) < 1)
+				if (chance > 0.5f && _mst.getEdge(i, j) < 1)
 				{
 					sf::Vector2f v1 = _vertices[i];
 					sf::Vector2f v2 = _vertices[j];
@@ -405,8 +405,11 @@ void TKGenerator::createCorridors()
 					float xDiff = v2.x - v1.x;
 					float yDiff = v1.y - v2.y;
 
-					sf::FloatRect r1(v1.x, v1.y - (rectSize / 2), xDiff, rectSize);
-					sf::FloatRect r2(v2.x - (rectSize / 2), v2.y, rectSize, yDiff);
+					int w = int((xDiff / _tileSize) + 0.5) * _tileSize;
+					int h = int((yDiff / _tileSize) + 0.5) * _tileSize;
+
+					sf::FloatRect r1(v1.x, v1.y - (rectSize / 2), w, rectSize);
+					sf::FloatRect r2(v2.x - (rectSize / 2), v2.y, rectSize, h);
 					
 					connections.push_back(r1);
 					connections.push_back(r2);
@@ -419,9 +422,7 @@ void TKGenerator::createCorridors()
 		}
 	}
 
-	float minThreshold = _minCellThreshold * _tileSize;
-	float maxThreshold = _maxCellThreshold * _tileSize;
-
+	Cells newCells;
 	for (auto& rect : connections)
 	{
 		for (auto& c : _cells)
@@ -435,14 +436,11 @@ void TKGenerator::createCorridors()
 			}
 		}
 
-
-
-		/*for (Cells::iterator it = _emptyCells.begin(); it != _emptyCells.end();)
+		for (Cells::iterator it = _emptyCells.begin(); it != _emptyCells.end();)
 		{
-
 			if ((*it)->intersects(rect))
 			{
-				//TKCell* c = new TKCell(*);
+				TKCell* c = new TKCell(*(*it));
 				_cells.push_back((*it));
 
 				it = _emptyCells.erase(it);
@@ -451,45 +449,10 @@ void TKGenerator::createCorridors()
 			{
 				++it;
 			}
-		}*/
-	}
-
-	for (auto& rect : connections)
-	{
-		float x = rect.left;
-		float y = rect.top;
-		float w = rect.width;
-		float h = rect.height;
-
-		int c = 1;
-
-		if (w != rectSize)
-		{
-			if (w < 0.0f)
-			{
-				w *= -1.0f;
-				c *= -1;
-			}
-			for (int i = 0; i < w; i += _tileSize)
-			{
-				TKCell* cell = new TKCell(_tileSize, x + (i * c), y, 1, 1);
-				_cells.push_back(cell);
-			}
-		}
-		else if (h != rectSize)
-		{
-			if (h < 0.0f)
-			{
-				h *= -1.0f;
-				c *= -1;
-			}
-			for (int i = 0; i < h; i += _tileSize)
-			{
-				TKCell* cell = new TKCell(_tileSize, x, y + (i * c), 1, 1);
-				_cells.push_back(cell);
-			}
 		}
 	}
+
+	Utility::clearPointerVector<TKCell>(&_emptyCells);
 }
 
 void TKGenerator::createMapGrid()
@@ -508,30 +471,8 @@ void TKGenerator::render(sf::RenderWindow* rw)
 		//cell->render(rw);
 	}
 	for (auto& cell : _cells)
-	
+	{	
 		cell->render(rw);
-	}
-
-
-	for (int i = 0; i < _mst.getVertexCount(); ++i)
-	{
-		for (int j = 0; j < _mst.getVertexCount(); ++j)
-		{
-			if (_mst.isEdge(i, j))
-			{
-				sf::VertexArray line(sf::PrimitiveType::Lines, 2);
-
-				line[0] = _vertices[i];
-				line[1] = _vertices[j];
-
-				line[0].color = sf::Color::Green;
-				line[1].color = sf::Color::Green;
-
-
-				rw->draw(line);
-
-			}
-		}
 	}
 
 	for (int i = 0; i < _graph.getVertexCount(); ++i)
@@ -554,18 +495,32 @@ void TKGenerator::render(sf::RenderWindow* rw)
 		}
 	}
 
-	for(const auto& triangle : _triangles)
+	for (int i = 0; i < _mst.getVertexCount(); ++i)
 	{
-		sf::ConvexShape shape;
-		shape.setPointCount(3);
-		shape.setFillColor(sf::Color::Transparent);
+		for (int j = 0; j < _mst.getVertexCount(); ++j)
+		{
+			if (_mst.isEdge(i, j))
+			{
+				sf::VertexArray line(sf::PrimitiveType::Lines, 2);
 
-		shape.setOutlineColor(sf::Color(0, 255, 0, 128));
-		shape.setOutlineThickness(3.f);
+				line[0] = _vertices[i];
+				line[1] = _vertices[j];
 
-		for (unsigned int i = 0; i < 3; ++i)
-			shape.setPoint(i, triangle[i]);
+				line[0].color = sf::Color::Green;
+				line[1].color = sf::Color::Green;
 
-		//rw->draw(shape);
+
+				rw->draw(line);
+
+			}
+		}
 	}
+
+	/*for (auto& rect : connections)
+	{
+		sf::RectangleShape s(sf::Vector2f(rect.width, rect.height));
+		s.setPosition(rect.left, rect.top);
+		s.setFillColor(sf::Color::Magenta);
+		rw->draw(s);
+	}*/
 }
