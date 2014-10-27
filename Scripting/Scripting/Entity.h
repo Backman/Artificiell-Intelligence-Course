@@ -20,6 +20,9 @@ public:
 	float getWidth() const;
 	float getHeight() const;
 
+	void setName(std::string name);
+	std::string getName() const;
+
 	void setColor(float r, float g, float b);
 
 	static LuaUserdata<Entity> createEntity(Lua lua, std::string name);

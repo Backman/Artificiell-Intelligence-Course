@@ -25,6 +25,8 @@ LuaUserdata<Entity> Entity::createEntity(Lua lua, std::string name)
 	userData.Bind("getWidth", &Entity::getWidth);
 	userData.Bind("getHeight", &Entity::getHeight);
 	userData.Bind("setColor", &Entity::setColor);
+	userData.Bind("getName", &Entity::getName);
+	userData.Bind("setName", &Entity::setName);
 
 	return userData;
 }
@@ -59,6 +61,17 @@ float Entity::getWidth() const
 float Entity::getHeight() const
 {
 	return _size.y;
+}
+
+
+void Entity::setName(std::string name)
+{
+	_name = name;
+}
+
+std::string Entity::getName() const
+{
+	return _name;
 }
 
 void Entity::setColor(float r, float g, float b)

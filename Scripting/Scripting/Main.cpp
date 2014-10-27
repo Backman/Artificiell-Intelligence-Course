@@ -2,6 +2,7 @@
 #include <functional>
 #include <fstream>
 #include <streambuf>
+#include <iostream>
 
 class Input
 {
@@ -20,7 +21,7 @@ int main()
 	auto global = lua.GetGlobalEnvironment();
 	lua.LoadStandardLibraries();
 
-	std::ifstream file("Entity_01.lua");
+	std::ifstream file("Entity.lua");
 	std::string script((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
 
 	file.close();
@@ -64,7 +65,7 @@ int main()
 			}
 			if (evt.key.code == sf::Keyboard::R)
 			{
-				file.open("Entity_01.lua");
+				file.open("Entity.lua");
 				script = std::string((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
 
 				lua.RunScript(script);
@@ -74,6 +75,7 @@ int main()
 				file.close();
 			}
 		}
+
 
 		float dt = deltaClock.restart().asSeconds();
 
