@@ -1,6 +1,6 @@
 moveSpeed = 500
 shrinkSpeed = 2
-time = 0
+t = 0
 
 startWidth = 50
 startHeight = 50
@@ -15,16 +15,16 @@ function init()
 end
 
 function tick(dt)
-	time = time + dt;
+	t = t + dt;
 
-	r = 0.8--math.abs(math.sin(time))
-	g = 0.3--math.abs(math.cos(time + 10))
-	b = 0.1---math.abs(math.sin(time * 10))
+	r = 0.8--math.abs(math.sin(t))
+	g = 0.3--math.abs(math.cos(t + 10))
+	b = 0.1---math.abs(math.sin(t * 10))
 
 	entity.setColor(r, g, b)
 
-	w = startWidth + shrinkSize * math.abs(math.sin(time * shrinkSpeed))
-	h = startHeight + shrinkSize * math.abs(math.sin(time * shrinkSpeed))
+	w = startWidth + shrinkSize * math.abs(math.sin(t * shrinkSpeed))
+	h = startHeight + shrinkSize * math.abs(math.sin(t * shrinkSpeed))
 	entity.setSize(h, w)
 
 	if keyPressed(Up) or keyPressed(W) then
