@@ -24,6 +24,7 @@ int main()
 
 	sf::Text text("", font);
 	text.setPosition(sf::Vector2f(0.0f, 0.0f));
+	//text.setColor(sf::Color::Black);
 
 	bool train = false;
 	int count = 0;

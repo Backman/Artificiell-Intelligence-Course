@@ -1,69 +1,88 @@
-#include <luacppinterface.h>
-#include <iostream>
+#include "Entity.h"
+#include <functional>
 #include <fstream>
 #include <streambuf>
 
-#include <SFML\Graphics.hpp>
-
-#include "Entity.h"
+class Input
+{
+public:
+	bool isPressed(int key)
+	{
+		return sf::Keyboard::isKeyPressed(sf::Keyboard::Key(key));
+	}
+};
 
 int main()
 {
-	std::ifstream file("Config.lua");
-	std::string script((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+	sf::RenderWindow window(sf::VideoMode(800, 640), "Scripting");
 
 	Lua lua;
-
+	auto global = lua.GetGlobalEnvironment();
 	lua.LoadStandardLibraries();
+
+	std::ifstream file("Entity_01.lua");
+	std::string script((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+
+	file.close();
+
+	auto keyPressed = lua.CreateFunction<bool(int)>([&](int key)
+	{
+		return sf::Keyboard::isKeyPressed(sf::Keyboard::Key(key));
+	});
+
+	global.Set("keyPressed", keyPressed);
+
+	global.Set("A", (int)sf::Keyboard::A);
+	global.Set("D", (int)sf::Keyboard::D);
+	global.Set("W", (int)sf::Keyboard::W);
+	global.Set("S", (int)sf::Keyboard::S);
+
+	global.Set("Up", (int)sf::Keyboard::Up);
+	global.Set("Down", (int)sf::Keyboard::Down);
+	global.Set("Left", (int)sf::Keyboard::Left);
+	global.Set("Right", (int)sf::Keyboard::Right);
+
+	auto entity = Entity::createEntity(lua, "Entity_01");
+	global.Set("entity", entity);
 
 	lua.RunScript(script);
 
-	LuaTable global = lua.GetGlobalEnvironment();
-	int width = global.Get<int>("width");
-	int height = global.Get<int>("height");
-	std::string title = global.Get<std::string>("title");
-
-
-	sf::RenderWindow window(sf::VideoMode(width, height), title);
-	sf::CircleShape shape(100.f);
-	shape.setFillColor(sf::Color::Green);
-
-	window.setFramerateLimit(60);
+	auto tick = global.Get<LuaFunction<void(float)>>("tick");
+	auto init = global.Get<LuaFunction<void()>>("init");
+	
+	init.Invoke();
 
 	sf::Clock deltaClock;
-
-	std::string entityFile = "Player.lua";
-	Entity e(entityFile);
-
 	while (window.isOpen())
 	{
-		sf::Event event;
-		while (window.pollEvent(event))
+		sf::Event evt;
+		while (window.pollEvent(evt))
 		{
-			sf::Event::KeyEvent key = event.key;
-
-			switch (key.code)
+			if (evt.type == sf::Event::Closed || evt.key.code == sf::Keyboard::Escape)
 			{
-			case sf::Keyboard::Escape:
 				window.close();
-				break;
-
-			case sf::Keyboard::F:
-				e.recompile();
-				break;
 			}
+			if (evt.key.code == sf::Keyboard::R)
+			{
+				file.open("Entity_01.lua");
+				script = std::string((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
 
-			if (event.type == sf::Event::Closed)
-				window.close();
+				lua.RunScript(script);
+
+				tick = global.Get<LuaFunction<void(float)>>("tick");
+
+				file.close();
+			}
 		}
 
-		float delta = deltaClock.restart().asSeconds();
+		float dt = deltaClock.restart().asSeconds();
 
-		e.tick(delta);
+		tick.Invoke(dt);
 
 		window.clear();
-		e.render(&window);
-		window.draw(shape);
+		
+		window.draw(*entity.GetPointer());
+
 		window.display();
 	}
 

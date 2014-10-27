@@ -17,7 +17,7 @@ void geneSwap(Gene& gene1, Gene& gene2);
 float randomRange(float min, float max);
 int randomRange(int min, int max);
 
-const std::string targetString = "Niklas sucks!";
+const std::string targetString = "()()()";
 
 int main()
 {

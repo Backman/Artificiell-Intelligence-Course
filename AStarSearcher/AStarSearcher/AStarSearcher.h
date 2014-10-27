@@ -5,26 +5,27 @@
 #include <algorithm>
 
 
-template<typename State>
+template<class T>
 class AStarSearcher
 {
-public:
-	enum class SearchState
-	{
-		SEARCHING,
-		SUCCEEDED
-	};
-
-	class Node
-	{
+		typedef T State;
 	public:
-		float cost, heuristic, total;
-		Node* parent;
-		State state;
+		enum class SearchState
+		{
+			SEARCHING,
+			SUCCEEDED
+		};
 
-		Node() :
-			cost(0), heuristic(0), total(0),
-			parent(nullptr)
+		class Node
+		{
+		public:
+			float cost, heuristic, total;
+			Node* parent;
+			State state;
+
+			Node() :
+				cost(0), heuristic(0), total(0),
+				parent(nullptr)
 		{ }
 	};
 	typedef std::vector<Node*> NodePtrList;

@@ -7,9 +7,7 @@
 class StackFSM
 {
 public:
-	StackFSM()
-	{
-	}
+	StackFSM() { }
 
 	~StackFSM() { }
 
