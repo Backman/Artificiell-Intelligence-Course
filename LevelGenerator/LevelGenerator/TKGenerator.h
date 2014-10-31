@@ -21,8 +21,8 @@ public:
 
 	void initGenerator(int cellCount, int tileSize, int minSize, int maxSize, int minCellThreshold, int maxCellThreshold);
 	virtual Map* generate() override;
-
-	void render(sf::RenderWindow* rw);
+	virtual void render(sf::RenderWindow* rw) override;
+	virtual void reset() override;
 
 	void seperate();
 
@@ -31,25 +31,19 @@ private:
 	void createCells(int count, int tileSize, int minSize, int maxSize);
 
 	bool computeSeparation(TKCell* currCell, sf::Vector2f& outPos);
-	void fillEmptySpace();
+	void fillGaps();
 	void filterCells();
 	void delunayTriangulation();
-	void constructGraph();
 	void constructMST();
 	void createCorridors();
-	void createMapGrid();
 
 	void getMinMax(int& xMin, int& xMax, int& yMin, int& yMax) const;
 
-	Cells _emptyCells;
+	Cells _gapCells;
 	Cells _cells;
 	Graph _graph;
 	Graph _mst;
-	Triangles _triangles;
 	Points _vertices;
-	//std::vector<sf::FloatRect> connections;
-
-	TileGrid _mapGrid;
 
 	int _cellCount;
 	int _tileSize;
@@ -58,5 +52,7 @@ private:
 	bool _initialized = false;
 	bool _doSeparation = true;
 	int _xMin, _xMax, _yMin, _yMax;
+
+	bool _filled, _filtered, _triangulated, _mstFound, _corridors;
 };
 

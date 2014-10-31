@@ -42,6 +42,11 @@ namespace Utility
 		return random;
 	}
 
+	static bool inRange(int val, int min, int max)
+	{
+		return val <= max && val >= min;
+	}
+
 	static float randomFloatRange(float min = 0.0f, float max = 1.0f)
 	{
 		if (min > max) {

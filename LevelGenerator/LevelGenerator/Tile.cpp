@@ -1,15 +1,11 @@
 #include "Tile.h"
 
 
-Tile::Tile(int tileSize, TileType tileType, sf::Color color) :
+Tile::Tile(int tileSize, TileType tileType) :
 	_tileSize(tileSize),
-	_type(tileType),
-	_shape(sf::Vector2f(tileSize, tileSize))
+	_type(tileType)
 {
-	_shape.setFillColor(sf::Color::Transparent);
 
-	
-	_shape.setOutlineThickness(1.0f);
 }
 
 
@@ -19,14 +15,14 @@ Tile::~Tile()
 
 void Tile::render(int x, int y, sf::RenderWindow* rw)
 {
-	_shape.setPosition(x, y);
+	sf::RectangleShape shape(sf::Vector2f(_tileSize, _tileSize));
+	shape.setFillColor(sf::Color::Transparent);
 
-	rw->draw(_shape);
-}
 
-void Tile::setOutlineColor(sf::Color color)
-{
-	_shape.setOutlineColor(color);
+	shape.setOutlineThickness(1.0f);
+	shape.setPosition(x, y);
+
+	rw->draw(shape);
 }
 
 TileType Tile::getTileType() const

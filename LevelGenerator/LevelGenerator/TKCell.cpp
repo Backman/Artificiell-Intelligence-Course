@@ -9,15 +9,10 @@ TKCell::TKCell(int tileSize, int x, int y, int width, int height) :
 	_tileSize(tileSize),
 	_pos(x, y),
 	_size(width * tileSize, height * tileSize),
-	_rows(width), _cols(height),
-	_status(Status::AVAILABLE)
+	_status(CellStatus::AVAILABLE),
+	_type(CellType::DefaultRoom)
 {
 	_tileGrid.initGrid(width, height, tileSize);
-
-	_color = sf::Color(Utility::randomFloatRange() * 255,
-		Utility::randomFloatRange() * 255,
-		Utility::randomFloatRange() * 255,
-		255);
 }
 
 
@@ -80,16 +75,6 @@ bool TKCell::intersects(TKCell& other) const
 	sf::FloatRect inter;
 
 	return r1.intersects(r2);
-	
-	//bool cond1, cond2, cond3, cond4;
-	
-	//cond1 = getLeft() < (other.getRight() + _tileSize);
-	//cond2 = getRight() > (other.getLeft() + _tileSize);
-	
-	//cond3 = getTop() < (other.getBottom() + _tileSize);
-	//cond4 = getBottom() > (other.getTop() + _tileSize);
-
-	//return cond1 && cond2 && cond3 && cond4;
 }
 
 bool TKCell::intersects(const sf::FloatRect& other) const
@@ -106,46 +91,48 @@ bool TKCell::containsPoint(int x, int y) const
 	return rect.contains(x, y);
 }
 
-void TKCell::setColor(sf::Color& color)
-{
-	_color = color;
-}
-
-void TKCell::setTileOutlineColor(sf::Color& color)
-{
-	for (int y = 0; y < _cols; ++y)
-	{
-		for (int x = 0; x < _rows; ++x)
-		{
-			Tile* t = _tileGrid.getTile(x, y);
-			if (t != nullptr)
-			{
-				t->setOutlineColor(color);
-			}
-		}
-	}
-}
-
-Status TKCell::getStatus() const
+CellStatus TKCell::getStatus() const
 {
 	return _status;
 }
 
-void TKCell::setStatus(Status s)
+void TKCell::setStatus(CellStatus s)
 {
 	_status = s;
 }
 
+CellType TKCell::getType() const
+{
+	return _type;
+}
+
+void TKCell::setType(CellType type)
+{
+	_type = type;
+}
+
 void TKCell::render(sf::RenderWindow* rw)
 {
-	if (_status == Status::UNAVAILABLE)
+	if (_status == CellStatus::UNAVAILABLE)
 	{
 		return;
 	}
 
 	sf::RectangleShape shape(_size);
 	shape.setPosition(_pos);
-	shape.setOutlineColor(sf::Color(255, 0, 0, 128));
+
+	if (_type == CellType::DefaultRoom)
+	{
+		shape.setOutlineColor(sf::Color::Red);
+	}
+	else if (_type == CellType::CorridorRoom)
+	{
+		shape.setOutlineColor(sf::Color(0, 0, 128, 255));
+	}
+	else if (_type == CellType::Corridor)
+	{
+		shape.setOutlineColor(sf::Color::Black);// (0, 255, 0, 128));
+	}
 	shape.setOutlineThickness(1.0f);
 	shape.setFillColor(sf::Color::Transparent);
 

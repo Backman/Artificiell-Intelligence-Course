@@ -11,7 +11,7 @@ public:
 	virtual ~MapGenerator();
 
 	virtual Map* generate() = 0;
-	virtual void step() { }
-	virtual void render(sf::RenderWindow* rw) { }
+	virtual void render(sf::RenderWindow* rw) = 0;
+	virtual void reset() = 0;
 };
 

@@ -63,15 +63,15 @@ void Engine::mainLoop()
 		render();
 	}
 }
-#include "TKGenerator.h"
+
 void Engine::tick()
 {
-	((TKGenerator*)_generator)->seperate();
+	_generator->generate();
 }
 
 void Engine::render()
 {
-	_window->clear();
+	_window->clear(sf::Color(128, 128, 128, 255));
 
 	if (_currentMap != nullptr)
 	{
@@ -101,6 +101,7 @@ void Engine::processEvent()
 
 		if (key.code == sf::Keyboard::R)
 		{
+			_generator->reset();
 			_generator->generate();
 		}
 	}

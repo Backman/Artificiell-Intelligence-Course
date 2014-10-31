@@ -7,12 +7,6 @@
 
 #include <iostream>
 
-struct Vertex
-{
-	int id;
-	sf::Vector2f* pos;
-};
-
 class Graph
 {
 public:

@@ -4,11 +4,18 @@
 #include <SFML\Graphics.hpp>
 #include "TileGrid.h";
 
-enum class Status
+enum class CellStatus
 {
 	AVAILABLE,
 	UNAVAILABLE,
 	FILL
+};
+
+enum class CellType
+{
+	DefaultRoom,
+	CorridorRoom,
+	Corridor
 };
 
 class TKCell
@@ -37,18 +44,16 @@ public:
 	bool intersects(const sf::FloatRect& other) const;
 	bool containsPoint(int x, int y) const;
 
-	void setColor(sf::Color& color);
-	void setTileOutlineColor(sf::Color& color);
+	CellStatus getStatus() const;
+	void setStatus(CellStatus s);
 
-	Status getStatus() const;
-	void setStatus(Status s);
+	CellType getType() const;
+	void setType(CellType type);
 
 private:
-
-	int _rows, _cols;
 	int _tileSize;
-	Status _status;
-	sf::Color _color;
+	CellStatus _status;
+	CellType _type;
 
 	sf::Vector2f _pos;
 	sf::Vector2f _size;

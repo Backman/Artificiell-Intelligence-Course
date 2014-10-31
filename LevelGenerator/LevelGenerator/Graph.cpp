@@ -17,7 +17,6 @@ Graph::~Graph()
 
 void Graph::clearGraph()
 {
-	_vertexCount = 0;
 	for (int i = 0; i < _vertexCount; ++i)
 	{
 		if (_adjMatrix[i] != nullptr)
@@ -32,6 +31,7 @@ void Graph::clearGraph()
 		delete[] _adjMatrix;
 		_adjMatrix = nullptr;
 	}
+	_vertexCount = 0;
 }
 
 void Graph::init(int vertexCount)
